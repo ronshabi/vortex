@@ -9,7 +9,7 @@ CFLAGS += -mgeneral-regs-only
 
 LDFLAGS = -nostdlib
 
-OBJECTS = main.o boot.o
+OBJECTS = main.o boot.o printk.o uart.o
 
 TARGET = kernel.elf
 
@@ -19,7 +19,10 @@ $(TARGET): linker.ld $(OBJECTS)
 boot.o: boot.S
 	$(AS) -o $@ $^
 
-main.o: main.c types.h
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
+
+%.o: %.c %.h
 	$(CC) $(CFLAGS) -c $<
 
 .PHONY: clean

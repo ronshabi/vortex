@@ -1,8 +1,9 @@
-.PHONY: all clean
-
+.PHONY: all clean run
 all:
-	$(MAKE) -C kernel
+	@$(MAKE) --no-print-directory -C kernel
 
 clean:
-	$(MAKE) -C kernel clean
+	@$(MAKE) --no-print-directory -C kernel clean
 
+run: all
+	@bash scripts/qemu.sh
