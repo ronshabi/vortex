@@ -16,7 +16,10 @@ kmain(void)
 
     printk("hello world %x\n", 0xdeadbeef);
 
-    while (1)
-    {
-    }
+    // do some funny shit
+
+    volatile int* x = (int*)0x7F7F7F7F;
+    *x = 20;
+
+
 }

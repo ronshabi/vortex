@@ -9,7 +9,7 @@ CFLAGS += -mgeneral-regs-only
 
 LDFLAGS = -nostdlib
 
-OBJECTS = main.o boot.o printk.o uart.o logbuffer.o klibc.o stringutils.o
+OBJECTS = main.o boot.o printk.o uart.o logbuffer.o klibc.o stringutils.o exception_context.o panic.o exception.o halt.o
 
 TARGET = kernel.elf
 
@@ -17,7 +17,13 @@ $(TARGET): linker.ld $(OBJECTS)
 	$(LD) $(LDFLAGS) -Tlinker.ld $(OBJECTS) -o $@
 
 boot.o: boot.S
-	$(AS) -o $@ $^
+	$(AS) -o $@ boot.S
+
+halt.o: halt.S
+	$(AS) -o $@ halt.S
+
+exception.o: exception.S asmbridge.h
+	$(AS) -o $@ exception.S
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<
