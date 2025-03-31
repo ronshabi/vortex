@@ -5,17 +5,18 @@
 
 #include "logbuffer.h"
 
-struct log_buffer printk_log_buffer;
+struct log_buffer  printk_log_buffer;
 struct log_buffer *printk_log_buffer_ptr;
 
-void kmain(void)
+void
+kmain(void)
 {
     log_buffer_init(&printk_log_buffer);
     printk_log_buffer_ptr = &printk_log_buffer;
 
-    printk("hello world\n");
+    printk("hello world %x\n", 0xdeadbeef);
 
-    while (1) {
-        
+    while (1)
+    {
     }
 }

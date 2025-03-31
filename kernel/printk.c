@@ -1,35 +1,38 @@
 #include "printk.h"
 #include "klibc.h"
-#include "uart.h"
 #include "logbuffer.h"
 #include "stringutils.h"
+#include "uart.h"
 #include <stdarg.h>
 
 #define PRINTK_CONV_BUFSIZE 1024
 
 extern struct log_buffer *printk_log_buffer_ptr;
 
-#define WRITE(str) log_buffer_write(printk_log_buffer_ptr, (str))
+#define WRITE(str)  log_buffer_write(printk_log_buffer_ptr, (str))
 #define WRITE_CH(c) log_buffer_writech(printk_log_buffer_ptr, (char)(c))
-#define WRITE_CH_REP(c, n) log_buffer_writech_repeating(printk_log_buffer_ptr, (char)(c), (size_t)(n))
+#define WRITE_CH_REP(c, n)                                                     \
+    log_buffer_writech_repeating(printk_log_buffer_ptr, (char)(c), (size_t)(n))
 
 enum printk_state
 {
-    PRINTK_STATE_NORMAL,
-    PRINTK_STATE_PARSING_WIDTH,
-    PRINTK_STATE_PARSING_FORMAT_SPECIFIER
+    NORMAL,
+    PARSING_WIDTH,
+    PARSING_FORMAT_SPECIFIER
 };
 
-static void uart_outfunc(int c)
+static void
+uart_outfunc(int c)
 {
     uart_write_ch(c);
 }
 
-static void pad_buffer(char *buf, size_t buf_len, int pad_width, char fill)
+static void
+pad_buffer(char *buf, size_t buf_len, int pad_width, char fill)
 {
-    const int text_len = (int)strlen(buf);
-    const bool is_left = pad_width < 0;
-    pad_width = is_left ? -pad_width : pad_width;
+    const int  text_len = (int)strlen(buf);
+    const bool is_left  = pad_width < 0;
+    pad_width           = is_left ? -pad_width : pad_width;
 
     if (text_len >= pad_width)
     {
@@ -59,47 +62,48 @@ static void pad_buffer(char *buf, size_t buf_len, int pad_width, char fill)
     buf[text_len + pad_width] = '\0';
 }
 
-__attribute__((format(printf, 1, 2))) void printk(const char *fmt, ...)
+__attribute__((format(printf, 1, 2))) void
+printk(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
 
-    enum printk_state state = PRINTK_STATE_NORMAL;
+    enum printk_state state = NORMAL;
 
     char convbuf[PRINTK_CONV_BUFSIZE];
 
-    char *string_arg = NULL;
-    char curr = 0;
-    char curr1 = 0;
-    int fmt_extrainc = 0;
-    int pad_width = 0;
-    bool should_pad = false;
-    char pad_filler = ' ';
-    bool should_print_convbuf = true;
+    char *string_arg           = NULL;
+    char  curr                 = 0;
+    char  curr1                = 0;
+    int   fmt_extrainc         = 0;
+    int   pad_width            = 0;
+    bool  should_pad           = false;
+    char  pad_filler           = ' ';
+    bool  should_print_convbuf = true;
 
     while (*fmt)
     {
         fmt_extrainc = 0;
-        curr = *fmt++;
-        curr1 = *fmt;
+        curr         = *fmt++;
+        curr1        = *fmt;
 
         switch (state)
         {
-        case PRINTK_STATE_NORMAL:
+        case NORMAL:
             if (curr == '%')
             {
                 if (isdigit(curr1))
                 {
-                    pad_width = atoi(fmt);
+                    pad_width  = atoi(fmt);
                     pad_filler = (curr1 == '0') ? '0' : ' ';
                     should_pad = pad_width > 0;
-                    state = PRINTK_STATE_PARSING_WIDTH;
+                    state      = PARSING_WIDTH;
                 }
                 else
                 {
                     should_pad = false;
-                    pad_width = 0;
-                    state = PRINTK_STATE_PARSING_FORMAT_SPECIFIER;
+                    pad_width  = 0;
+                    state      = PARSING_FORMAT_SPECIFIER;
                 }
             }
             else
@@ -109,58 +113,68 @@ __attribute__((format(printf, 1, 2))) void printk(const char *fmt, ...)
 
             break;
 
-        case PRINTK_STATE_PARSING_WIDTH:
+        case PARSING_WIDTH:
             if (!isdigit(curr1))
             {
-                state = PRINTK_STATE_PARSING_FORMAT_SPECIFIER;
+                state = PARSING_FORMAT_SPECIFIER;
             }
 
             break;
 
-        case PRINTK_STATE_PARSING_FORMAT_SPECIFIER:
+        case PARSING_FORMAT_SPECIFIER:
             should_print_convbuf = true;
             if (curr == 'd')
             {
-                string_from_int64(va_arg(ap, int32_t), convbuf, PRINTK_CONV_BUFSIZE);
+                string_from_int64(va_arg(ap, int32_t), convbuf,
+                                  PRINTK_CONV_BUFSIZE);
             }
             else if (curr == 'l' && curr1 == 'd')
             {
-                string_from_int64(va_arg(ap, int64_t), convbuf, PRINTK_CONV_BUFSIZE);
+                string_from_int64(va_arg(ap, int64_t), convbuf,
+                                  PRINTK_CONV_BUFSIZE);
                 fmt_extrainc = 1;
             }
             else if (curr == 'u')
             {
-                string_from_uint64(va_arg(ap, uint32_t), 10, convbuf, PRINTK_CONV_BUFSIZE, false);
+                string_from_uint64(va_arg(ap, uint32_t), 10, convbuf,
+                                   PRINTK_CONV_BUFSIZE, false);
             }
             else if (curr == 'l' && curr1 == 'u')
             {
-                string_from_uint64(va_arg(ap, uint64_t), 10, convbuf, PRINTK_CONV_BUFSIZE, false);
+                string_from_uint64(va_arg(ap, uint64_t), 10, convbuf,
+                                   PRINTK_CONV_BUFSIZE, false);
                 fmt_extrainc = 1;
             }
             else if (curr == 'z')
             {
-                string_from_uint64(va_arg(ap, size_t), 10, convbuf, PRINTK_CONV_BUFSIZE, false);
+                string_from_uint64(va_arg(ap, size_t), 10, convbuf,
+                                   PRINTK_CONV_BUFSIZE, false);
             }
             else if (curr == 'p')
             {
-                string_from_uint64(va_arg(ap, uint64_t), 16, convbuf, PRINTK_CONV_BUFSIZE, false);
+                string_from_uint64(va_arg(ap, uint64_t), 16, convbuf,
+                                   PRINTK_CONV_BUFSIZE, false);
             }
             else if (curr == 'X')
             {
-                string_from_uint64(va_arg(ap, uint32_t), 16, convbuf, PRINTK_CONV_BUFSIZE, false);
+                string_from_uint64(va_arg(ap, uint32_t), 16, convbuf,
+                                   PRINTK_CONV_BUFSIZE, false);
             }
             else if (curr == 'l' && curr1 == 'X')
             {
-                string_from_uint64(va_arg(ap, uint64_t), 16, convbuf, PRINTK_CONV_BUFSIZE, false);
+                string_from_uint64(va_arg(ap, uint64_t), 16, convbuf,
+                                   PRINTK_CONV_BUFSIZE, false);
                 fmt_extrainc = 1;
             }
             else if (curr == 'x')
             {
-                string_from_uint64(va_arg(ap, uint32_t), 16, convbuf, PRINTK_CONV_BUFSIZE, true);
+                string_from_uint64(va_arg(ap, uint32_t), 16, convbuf,
+                                   PRINTK_CONV_BUFSIZE, true);
             }
             else if (curr == 'l' && curr1 == 'x')
             {
-                string_from_uint64(va_arg(ap, uint64_t), 16, convbuf, PRINTK_CONV_BUFSIZE, true);
+                string_from_uint64(va_arg(ap, uint64_t), 16, convbuf,
+                                   PRINTK_CONV_BUFSIZE, true);
                 fmt_extrainc = 1;
             }
             else if (curr == 'c')
@@ -175,25 +189,28 @@ __attribute__((format(printf, 1, 2))) void printk(const char *fmt, ...)
 
                 if (should_pad && pad_width - 1)
                 {
-                    log_buffer_writech_repeating(printk_log_buffer_ptr, ' ', (size_t)pad_width - 1);
+                    log_buffer_writech_repeating(printk_log_buffer_ptr, ' ',
+                                                 (size_t)pad_width - 1);
                 }
             }
             else if (curr == 's')
             {
-                should_print_convbuf = false;
-                string_arg = va_arg(ap, char *);
+                should_print_convbuf     = false;
+                string_arg               = va_arg(ap, char *);
                 const int string_arg_len = (int)strlen(string_arg);
 
                 if (should_pad && pad_width < 0 && string_arg_len < -pad_width)
                 {
-                    WRITE_CH_REP(' ', (size_t)(-pad_width) - (size_t)string_arg_len);
+                    WRITE_CH_REP(' ',
+                                 (size_t)(-pad_width) - (size_t)string_arg_len);
                 }
 
                 WRITE(string_arg);
 
                 if (should_pad && pad_width && string_arg_len < pad_width)
                 {
-                    WRITE_CH_REP(' ', (size_t)pad_width - (size_t)string_arg_len);
+                    WRITE_CH_REP(' ',
+                                 (size_t)pad_width - (size_t)string_arg_len);
                 }
             }
             else
@@ -214,7 +231,7 @@ __attribute__((format(printf, 1, 2))) void printk(const char *fmt, ...)
                 WRITE(convbuf);
             }
 
-            state = PRINTK_STATE_NORMAL;
+            state = NORMAL;
             break;
         }
 

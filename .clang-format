@@ -1,0 +1,14 @@
+BasedOnStyle: Microsoft
+IndentWidth: 4
+UseTab: Never
+AlignAfterOpenBracket: true
+AlignOperands: true
+AlignConsecutiveMacros: true
+AlignConsecutiveAssignments: true
+AlignConsecutiveBitFields: true
+AlignConsecutiveDeclarations: true
+AlignTrailingComments: true
+ColumnLimit: 80
+IndentCaseBlocks: false
+IndentCaseLabels: false
+BreakAfterReturnType: All
