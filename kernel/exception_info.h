@@ -4,7 +4,7 @@
 
 #define AARCH64_GENERAL_REGISTERS 31
 
-struct exception_context
+struct exception_info
 {
     uint64_t regs[AARCH64_GENERAL_REGISTERS];
     uint64_t current_el;
@@ -13,6 +13,6 @@ struct exception_context
     uint64_t spsr_elx;
 } __attribute__((__aligned__(16)));
 
-_Static_assert(sizeof(struct exception_context) % 16 == 0,
-               "struct exception_context must be divisible by 16 to comply "
+_Static_assert(sizeof(struct exception_info) % 16 == 0,
+               "struct exception_info must be divisible by 16 to comply "
                "with AArch64 limitations!");

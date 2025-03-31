@@ -1,5 +1,6 @@
 #pragma once
 
-#include "exception_context.h"
+#include "exception_info.h"
 
-__attribute__((noreturn)) void panic(struct exception_context *context);
+__attribute__((noreturn)) void
+panic(struct exception_info *info);

@@ -18,8 +18,6 @@ kmain(void)
 
     // do some funny shit
 
-    volatile int* x = (int*)0x7F7F7F7F;
-    *x = 20;
-
-
+    volatile int *x = (int *)0x7F7F7F7F;
+    *x              = 20;
 }

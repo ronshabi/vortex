@@ -113,10 +113,10 @@ vector_table_el1:
 panic_prepare:
     // I don't know how to transfer sizeof objects from C so we must
     // cross our fingers this works
-    .equ SIZEOF_Exception_Context, 288
+    .equ size_of_exception_info_struct, 288
 
     // let's prepare all info to pass to struct Exception_Context
-    sub sp, sp, #SIZEOF_Exception_Context
+    sub sp, sp, #size_of_exception_info_struct
 
     // load 'em all, 2 registers are 16 bytes = 0x10
     // uint64_t regs[AARCH64_GENERAL_REGISTERS]
