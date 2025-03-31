@@ -153,6 +153,11 @@ panic_prepare:
     mrs x0, SPSR_EL1
     str x0, [sp, #0x110]
 
+    // uint64_t far_elx (if there is one, else its just garbage)
+    mrs x0, FAR_EL1
+    str x0, [sp, #0x118]
+
+
     // now load sp to the first arg (x0) so we can use it in C
     mov x0, sp
 

@@ -32,6 +32,7 @@ panic(struct exception_info *info)
     printk(ANSI_BOLD "%10s" ANSI_RESET ": 0x%lX\n", "SPSR_ELx", info->spsr_elx);
     printk(ANSI_BOLD "%10s" ANSI_RESET ": 0x%lX\n", "ELR_ELx", info->elr_elx);
     printk(ANSI_BOLD "%10s" ANSI_RESET ": 0x%lX\n", "ESR_ELx", info->esr_elx);
+    printk(ANSI_BOLD "%10s" ANSI_RESET ": 0x%lX\n", "FAR_ELx", info->far_elx);
 
     printk("\n");
 
