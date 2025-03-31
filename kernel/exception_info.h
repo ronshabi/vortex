@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #define AARCH64_GENERAL_REGISTERS 31
+#define AARCH64_FRAME_POINTER_REGISTER 29
 
 struct exception_info
 {

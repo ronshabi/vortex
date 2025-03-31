@@ -15,18 +15,19 @@ halt(void);
 __attribute__((noreturn)) void
 panic(struct exception_info *info)
 {
+
     printk(ANSI_BOLD_RED "Vortex: Kernel Panic" ANSI_RESET "\n");
 
     printk(ANSI_CYAN "General Purpose Registers:" ANSI_RESET "\n");
     for (unsigned r = 0; r < AARCH64_GENERAL_REGISTERS; ++r) {
-        printk(ANSI_BOLD "0x%02d" ANSI_RESET ": 0x%08lX\t", r, info->regs[r]);
+        printk(ANSI_BOLD "0x%02d" ANSI_RESET ": 0x%08lX  ", r, info->regs[r]);
 
         if ((r+1) % 4 == 0) {
             printk("\n");
         }
     }
-    printk("\n\n");
 
+    printk("\n\n");
     printk(ANSI_CYAN "System Registers:" ANSI_RESET "\n");
     printk(ANSI_BOLD "%10s" ANSI_RESET ": %lu\n", "CurrentEL", info->current_el >> 2);
     printk(ANSI_BOLD "%10s" ANSI_RESET ": 0x%lX\n", "SPSR_ELx", info->spsr_elx);
@@ -35,6 +36,23 @@ panic(struct exception_info *info)
     printk(ANSI_BOLD "%10s" ANSI_RESET ": 0x%lX\n", "FAR_ELx", info->far_elx);
 
     printk("\n");
+    printk(ANSI_CYAN "Call Stack:" ANSI_RESET "\n");
+
+
+    volatile uint64_t *fp = (uint64_t*)info->regs[AARCH64_FRAME_POINTER_REGISTER];
+    int depth = 0;
+    const int max_depth = 7;
+
+    uint64_t lr = info->regs[30];
+
+    while (depth < max_depth && fp) {
+        printk("    [%d] <0x%lX>\n", depth, lr);
+         lr = fp[1];
+        fp = (uint64_t*)*fp; // next frame please
+        ++depth;
+    }
+
+
 
     halt();
 }
