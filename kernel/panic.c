@@ -11,6 +11,11 @@ halt(void);
 #define ANSI_RESET "\033[0m"
 
 
+// If the jump between this frame pointer and the next frame pointer
+// is bigger than this number, we probably got outside of the stack.
+// So, stop unwinding.
+#define STOP_UNWIND_MAX_DISTANCE 0x100
+
 
 __attribute__((noreturn)) void
 panic(struct exception_info *info)
@@ -38,17 +43,26 @@ panic(struct exception_info *info)
     printk("\n");
     printk(ANSI_CYAN "Call Stack:" ANSI_RESET "\n");
 
-
+    // unwind
     volatile uint64_t *fp = (uint64_t*)info->regs[AARCH64_FRAME_POINTER_REGISTER];
+    volatile uint64_t *next_fp = fp;
     int depth = 0;
     const int max_depth = 7;
 
     uint64_t lr = info->regs[30];
 
+
+
     while (depth < max_depth && fp) {
         printk("    [%d] <0x%lX>\n", depth, lr);
-         lr = fp[1];
-        fp = (uint64_t*)*fp; // next frame please
+        lr = fp[1];
+        next_fp = (uint64_t*)*fp; // next frame please
+
+        if ((fp-next_fp) > STOP_UNWIND_MAX_DISTANCE) {
+            break;
+        }
+        
+        fp = next_fp;
         ++depth;
     }
 
