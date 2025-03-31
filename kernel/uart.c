@@ -10,7 +10,7 @@ void uart_write(const char *buf)
     }
 }
 
-void uart_write_ch(char ch)
+void uart_write_ch(int ch)
 {
     *aarch64_virt_uart_addr = (uint8_t)ch;
 }
