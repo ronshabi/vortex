@@ -8,7 +8,7 @@ void log_buffer_init(struct log_buffer *lb)
     lb->tail = 0;
 }
 
-int log_buffer_write(struct log_buffer *lb, char c)
+int log_buffer_writech(struct log_buffer *lb, char c)
 {
     const size_t next = (lb->head + 1) % LOG_BUFFER_SIZE;
 
@@ -21,11 +21,22 @@ int log_buffer_write(struct log_buffer *lb, char c)
     return 1;
 }
 
-int log_buffer_writestr(struct log_buffer *lb, const char *str)
+int log_buffer_writech_repeating(struct log_buffer *lb, char c, size_t n)
+{
+    int res = 0;
+
+    while (n--) {
+        res |= log_buffer_writech(lb, c);
+    }
+
+    return res;
+}
+
+int log_buffer_write(struct log_buffer *lb, const char *str)
 {
     int res = 0;
     while (*str) {
-        res |= log_buffer_write(lb, *str);
+        res |= log_buffer_writech(lb, *str);
         ++str;
     }
 
