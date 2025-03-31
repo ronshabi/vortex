@@ -9,7 +9,7 @@ CFLAGS += -mgeneral-regs-only
 
 LDFLAGS = -nostdlib
 
-OBJECTS = main.o boot.o printk.o uart.o logbuffer.o klibc.o
+OBJECTS = main.o boot.o printk.o uart.o logbuffer.o klibc.o stringutils.o
 
 TARGET = kernel.elf
 
