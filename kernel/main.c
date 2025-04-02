@@ -2,6 +2,7 @@
 
 #include "printk.h"
 #include "uart.h"
+#include "symbols.h"
 
 #include "logbuffer.h"
 
@@ -40,9 +41,11 @@ kmain(void)
 
     printk("hello world %x\n", 0xdeadbeef);
 
+    print_kernel_symbols();
+
     // do some funny shit
 
     // volatile int *x = (int *)0x7F7F7F7F;
     // *x              = 20;
-    func1();
+    // func1();
 }

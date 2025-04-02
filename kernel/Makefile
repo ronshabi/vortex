@@ -1,7 +1,6 @@
 CC=aarch64-none-elf-gcc
 AS=aarch64-none-elf-as
 LD=aarch64-none-elf-ld
-
 PYTHON=python3
 
 CFLAGS  = -std=c99 -g -O0
@@ -12,14 +11,13 @@ CFLAGS += -fno-omit-frame-pointer
 CFLAGS += -fno-optimize-sibling-calls
 
 LDFLAGS = -nostdlib
-
 LDSCRIPT = linker.ld
 
-ASFLAGS = -g 
+ASFLAGS = -g
 
 OBJECTS = main.o boot.o printk.o uart.o logbuffer.o klibc.o \
-          stringutils.o exception_info.o panic.o exception.o halt.o
-
+          stringutils.o exception_info.o panic.o exception.o halt.o \
+		  symbols.o
 
 
 TARGET = kernel.elf
@@ -28,14 +26,14 @@ $(TARGET): linker.ld $(OBJECTS)
 	$(LD) $(LDFLAGS) -T $(LDSCRIPT) $(OBJECTS) -o $@
 
 	@# Generate kernel symbols
-	$(SHELL) ../scripts/gen_symbols_map.sh $(TARGET) > symbols.map
-	$(PYTHON) ../scripts/gen_symbols_asm.py symbols.map > symbols.S
+	$(SHELL) ../scripts/gen_symbols_map.sh $(TARGET) > ksyms.map
+	$(PYTHON) ../scripts/gen_symbols_asm.py ksyms.map > ksyms.S
 
 	@# Compile the symbols to an object
-	$(AS) $(ASFLAGS) -o symbols.o symbols.S
+	$(AS) $(ASFLAGS) -o ksyms.o ksyms.S
 
 	@# Link again!
-	$(LD) $(LDFLAGS) -T $(LDSCRIPT) $(OBJECTS) symbols.o -o $@
+	$(LD) $(LDFLAGS) -T $(LDSCRIPT) $(OBJECTS) ksyms.o -o $@
 
 boot.o: boot.S
 	$(AS) $(ASFLAGS) -o $@ boot.S
@@ -56,3 +54,4 @@ exception.o: exception.S
 clean:
 	rm -f *.o
 	rm -f $(TARGET)
+	rm -f *.map

@@ -58,6 +58,7 @@ def gen_asm(filename: str):
 
         symbol_name_offset += len(symbol_name) + 1
 
+    print(f".size {LABEL_SYMBOL_SECTION}, (. - {LABEL_SYMBOL_SECTION})")
     print()
     gen_asm_header(LABEL_SYMBOL_SECTION_STRINGTABLE, 8, "@object")
 
@@ -69,6 +70,9 @@ def gen_asm(filename: str):
         symbol_name = f'"{symbol_name}"'
         print(f".asciz {symbol_name:<32}; // @{symbol_name_offset}")
         symbol_name_offset += len(symbol_name) + 1
+
+
+    print(f".size {LABEL_SYMBOL_SECTION_STRINGTABLE}, (. - {LABEL_SYMBOL_SECTION_STRINGTABLE})")
 
 
 def main():

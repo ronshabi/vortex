@@ -1,4 +1,3 @@
 *.o
 *.elf
-symbols.map
-symbols.S
+ksyms.*
