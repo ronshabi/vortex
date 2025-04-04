@@ -1,8 +1,7 @@
 #include <stdint.h>
 
 #include "printk.h"
-#include "uart.h"
-#include "symbols.h"
+#include "ksyms.h"
 
 #include "logbuffer.h"
 
@@ -41,7 +40,7 @@ kmain(void)
 
     printk("hello world %x\n", 0xdeadbeef);
 
-    print_kernel_symbols();
+    ksyms_print_all_symbols();
 
     // do some funny shit
 

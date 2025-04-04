@@ -6,7 +6,9 @@ import sys
 
 EXCLUDED_SYMBOL_TYPES = "aNnU?"
 LABEL_SYMBOL_SECTION = "vortex_symbols"
+LABEL_SYMBOL_SECTION_SIZE = f"{LABEL_SYMBOL_SECTION}_size"
 LABEL_SYMBOL_SECTION_STRINGTABLE = "vortex_symbols_stringtbl"
+LABEL_SYMBOL_SECTION_STRINGTABLE_SIZE = f"{LABEL_SYMBOL_SECTION_STRINGTABLE}_size"
 
 
 def parse_nm_output(filename: str):
@@ -53,13 +55,14 @@ def gen_asm(filename: str):
         symbol_addr, symbol_type, symbol_name = symbol
         symbol_addr_relative = symbol_addr - min_addr
         print(
-            f".long 0x{symbol_addr_relative:08x}; .long {symbol_name_offset};\t// 0x{symbol_addr:016x} {symbol_name} ({symbol_type})"
+            f".quad 0x{symbol_addr_relative:08x}; .quad {symbol_name_offset};\t// 0x{symbol_addr:016x} {symbol_name} ({symbol_type})"
         )
 
         symbol_name_offset += len(symbol_name) + 1
 
-    print(f".size {LABEL_SYMBOL_SECTION}, (. - {LABEL_SYMBOL_SECTION})")
+    print(f"\n.size {LABEL_SYMBOL_SECTION}, (. - {LABEL_SYMBOL_SECTION})\n")
     print()
+
     gen_asm_header(LABEL_SYMBOL_SECTION_STRINGTABLE, 8, "@object")
 
     # Symbol strings
@@ -71,8 +74,23 @@ def gen_asm(filename: str):
         print(f".asciz {symbol_name:<32}; // @{symbol_name_offset}")
         symbol_name_offset += len(symbol_name) + 1
 
+    print(
+        f"\n.size {LABEL_SYMBOL_SECTION_STRINGTABLE}, (. - {LABEL_SYMBOL_SECTION_STRINGTABLE})\n"
+    )
 
-    print(f".size {LABEL_SYMBOL_SECTION_STRINGTABLE}, (. - {LABEL_SYMBOL_SECTION_STRINGTABLE})")
+    gen_asm_header(LABEL_SYMBOL_SECTION_SIZE, 8, "@object")
+
+    # Each symbol is 2 quads: (addr-offset, stringtbl-offset) -> 16 bytes
+    print("\t.quad", len(symbols) * 8 * 2)
+    print(f"\n.size {LABEL_SYMBOL_SECTION_SIZE}, (. - {LABEL_SYMBOL_SECTION_SIZE})\n")
+    print()
+
+    gen_asm_header(LABEL_SYMBOL_SECTION_STRINGTABLE_SIZE, 8, "@object")
+    print("\t.quad", symbol_name_offset)
+    print(
+        f"\n.size {LABEL_SYMBOL_SECTION_STRINGTABLE_SIZE}, (. - {LABEL_SYMBOL_SECTION_STRINGTABLE_SIZE})\n"
+    )
+    print()
 
 
 def main():

@@ -17,23 +17,25 @@ ASFLAGS = -g
 
 OBJECTS = main.o boot.o printk.o uart.o logbuffer.o klibc.o \
           stringutils.o exception_info.o panic.o exception.o halt.o \
-		  symbols.o
+		  ksyms.o
 
 
 TARGET = kernel.elf
+
+GENERATED = symbols.map symbols.S
 
 $(TARGET): linker.ld $(OBJECTS)
 	$(LD) $(LDFLAGS) -T $(LDSCRIPT) $(OBJECTS) -o $@
 
 	@# Generate kernel symbols
-	$(SHELL) ../scripts/gen_symbols_map.sh $(TARGET) > ksyms.map
-	$(PYTHON) ../scripts/gen_symbols_asm.py ksyms.map > ksyms.S
+	$(SHELL) ../scripts/gen_symbols_map.sh $(TARGET) > symbols.map
+	$(PYTHON) ../scripts/gen_symbols_asm.py symbols.map > symbols.S
 
 	@# Compile the symbols to an object
-	$(AS) $(ASFLAGS) -o ksyms.o ksyms.S
+	$(AS) $(ASFLAGS) -o symbols.o symbols.S
 
 	@# Link again!
-	$(LD) $(LDFLAGS) -T $(LDSCRIPT) $(OBJECTS) ksyms.o -o $@
+	$(LD) $(LDFLAGS) -T $(LDSCRIPT) $(OBJECTS) symbols.o -o $@
 
 boot.o: boot.S
 	$(AS) $(ASFLAGS) -o $@ boot.S
@@ -54,4 +56,4 @@ exception.o: exception.S
 clean:
 	rm -f *.o
 	rm -f $(TARGET)
-	rm -f *.map
+	rm -f $(GENERATED)
