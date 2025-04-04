@@ -32,10 +32,11 @@ const char *ksyms_addr2line(uint64_t addr)
 {
     const uint64_t amount_of_symbols = vortex_symbols_size / sizeof(struct ksym_entry);
 
-    for (uint64_t i = 0; i < amount_of_symbols; ++i) {
+    for (uint64_t i = 0; i + 1< amount_of_symbols; ++i) {
         const struct ksym_entry sym = vortex_symbols[i];
+        const struct ksym_entry sym_next = vortex_symbols[i+1];
 
-        if (sym.addr + CONF_BASEADDR > addr) {
+        if (sym_next.addr + CONF_BASEADDR >= addr) {
             return vortex_symbols_stringtbl + sym.string_offset;
         }
     }
