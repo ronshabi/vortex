@@ -28,8 +28,8 @@ $(TARGET): linker.ld $(OBJECTS)
 	$(LD) $(LDFLAGS) -T $(LDSCRIPT) $(OBJECTS) -o $@
 
 	@# Generate kernel symbols
-	$(SHELL) ../scripts/gen_symbols_map.sh $(TARGET) > symbols.map
-	$(PYTHON) ../scripts/gen_symbols_asm.py symbols.map > symbols.S
+	$(SHELL) $(MK_SCRIPTS)/gen_symbols_map.sh $(TARGET) > symbols.map
+	$(PYTHON) $(MK_SCRIPTS)/gen_symbols_asm.py symbols.map > symbols.S
 
 	@# Compile the symbols to an object
 	$(AS) $(ASFLAGS) -o symbols.o symbols.S
