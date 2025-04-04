@@ -1,5 +1,6 @@
 #include "panic.h"
 #include "printk.h"
+#include "ksyms.h"
 
 // Get 'halt' from asm world
 extern void __attribute__((noreturn))
@@ -51,10 +52,9 @@ panic(struct exception_info *info)
 
     uint64_t lr = info->regs[30];
 
-
-
     while (depth < max_depth && fp) {
-        printk("    [%d] <0x%lX>\n", depth, lr);
+        const char *symbol_name = ksyms_addr2line(lr);
+        printk("    [%d] <0x%lX> %s\n", depth, lr, symbol_name);
         lr = fp[1];
         next_fp = (uint64_t*)*fp; // next frame please
 

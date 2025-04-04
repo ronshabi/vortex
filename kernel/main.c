@@ -40,11 +40,10 @@ kmain(void)
 
     printk("hello world %x\n", 0xdeadbeef);
 
-    ksyms_print_all_symbols();
 
     // do some funny shit
 
     // volatile int *x = (int *)0x7F7F7F7F;
     // *x              = 20;
-    // func1();
+    func1();
 }
