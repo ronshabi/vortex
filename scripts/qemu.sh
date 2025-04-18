@@ -9,10 +9,11 @@ KERNEL="kernel/kernel.elf"
 LOADER="loader,file=${KERNEL},addr=0x40100000,cpu-num=0"
 DEBUG=int,cpu_reset,strace,unimp
 
-qemu-system-aarch64 -machine virt \
+qemu-system-aarch64 -machine virt,gic-version=3 \
                     -cpu cortex-a72 \
                     -m 128m \
                     -serial stdio \
                     -device "${LOADER}" \
-                    -d "${DEBUG}"
+                    -d "${DEBUG}" \
+                    -s -S
                     

@@ -17,7 +17,7 @@ ASFLAGS = -g
 
 OBJECTS = main.o boot.o printk.o uart.o logbuffer.o klibc.o \
           stringutils.o exception_info.o panic.o exception.o halt.o \
-		  ksyms.o
+		  ksyms.o memory.o
 
 
 TARGET = kernel.elf
