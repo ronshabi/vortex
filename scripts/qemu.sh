@@ -5,15 +5,25 @@
 # https://www.qemu.org/docs/master/system/arm/virt.html
 # https://www.qemu.org/docs/master/system/arm/emulation.html
 
+set -x
+
 KERNEL="kernel/kernel.elf"
 LOADER="loader,file=${KERNEL},addr=0x40100000,cpu-num=0"
-DEBUG=int,cpu_reset,strace,unimp
+DEBUG=int,cpu_reset,strace,unimp,guest_errors,strace
+TRACING="gicv3_* virtio_mmio_* virtio_iommu*" #pl011_* 
+
+TRACING_OPTS=""
+
+for word in $TRACING; do
+    TRACING_OPTS+="--trace $word " 
+done
 
 qemu-system-aarch64 -machine virt,gic-version=3 \
                     -cpu cortex-a72 \
                     -m 128m \
-                    -serial stdio \
-                    -device "${LOADER}" \
+                    -device "${LOADER}" -device usb-ehci --device usb-kbd \
                     -d "${DEBUG}" \
-                    -s -S
-                    
+                    -nographic \
+                    $TRACING_OPTS
+
+

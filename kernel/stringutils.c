@@ -17,7 +17,12 @@ string_from_uint64(uint64_t value, uint32_t base, char *outbuf,
 
     while (value)
     {
-        outbuf[i] = c_digits[value % base + (hexlower * 6)];
+        outbuf[i] = c_digits[(value % (uint64_t)base)];
+
+        if (outbuf[i] >= 'A' && outbuf[i] <= 'F' && hexlower) {
+            outbuf[i] += 'a' - 'A';
+        }
+
         value /= base;
         ++i;
     }
