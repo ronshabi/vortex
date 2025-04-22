@@ -11,4 +11,4 @@ AlignTrailingComments: true
 ColumnLimit: 80
 IndentCaseBlocks: false
 IndentCaseLabels: false
-BreakAfterReturnType: All
+# BreakAfterReturnType: All
