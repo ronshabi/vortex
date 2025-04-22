@@ -18,17 +18,21 @@
 
 #define GICD_REG_IPRIORITYR(n) (GICD_BASE + 0x0400UL + (4 * (n)))
 
+// GICR
+
 #define GICR_REG_SGI_IPRIORITYR(n)                                             \
     (GICR_BASE + GICR_SGI_BASE + 0x0400UL + (4 * (n)))
 
-#define GICR_REG_SGI_IGROUPR(n)  (GICR_BASE + GICR_SGI_BASE + 0x0080UL + (4 * (n)))
-#define GICR_REG_SGI_IGRPMODR(n) (GICR_BASE + GICR_SGI_BASE + 0x0D00UL + (4 * (n)))
+#define GICR_REG_SGI_IGROUPR(n)                                                \
+    (GICR_BASE + GICR_SGI_BASE + 0x0080UL + (4 * (n)))
+#define GICR_REG_SGI_IGRPMODR(n)                                               \
+    (GICR_BASE + GICR_SGI_BASE + 0x0D00UL + (4 * (n)))
 
-#define GICR_REG_CTLR  (GICR_BASE + 0x00UL)
-#define GICR_REG_WAKER (GICR_BASE + 0x14UL)
+    #define GICR_REG_TYPER      (GICR_BASE + 0x0008UL)
+#define GICR_REG_CTLR       (GICR_BASE + 0x0000UL)
+#define GICR_REG_WAKER      (GICR_BASE + 0x0014UL)
+#define GICR_REG_ISENABLER0 (GICR_BASE + GICR_SGI_BASE + 0x0180UL)
 
-void
-init_gic();
+void init_gic();
 
-void
-enable_timer();
+void enable_timer();

@@ -13,7 +13,7 @@ void
 uart_init(void)
 {
     // https://developer.arm.com/documentation/ddi0183/g/programmers-model/register-descriptions/control-register--uartcr
-    memory_write_u32(ARM_PL011_UARTCR, 0b0000001100000001);
+    mem_write_u32(ARM_PL011_UARTCR, 0b0000001100000001);
 }
 
 void
