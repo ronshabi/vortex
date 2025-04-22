@@ -7,7 +7,7 @@
 
 set -x
 
-KERNEL="kernel/kernel.elf"
+KERNEL="$1"
 LOADER="loader,file=${KERNEL},addr=0x40100000,cpu-num=0"
 DEBUG=int,cpu_reset,strace,unimp,guest_errors,strace
 TRACING="gicv3_* virtio_mmio_* virtio_iommu*" #pl011_* 
