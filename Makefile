@@ -2,6 +2,7 @@ PREFIX := aarch64-none-elf
 CC := $(PREFIX)-gcc
 AS := $(PREFIX)-as
 LD := $(PREFIX)-ld
+NM := $(PREFIX)-nm
 
 PYTHON := python3
 
@@ -30,7 +31,6 @@ BUILD_DIR := build
 OBJECTS   := $(foreach o, $(OBJECTS), $(BUILD_DIR)/$(o))
 TARGET    := $(BUILD_DIR)/$(TARGET)
 
-
 .PHONY: all
 all: $(TARGET)
 	@mkdir -p $(BUILD_DIR)
@@ -39,7 +39,7 @@ $(TARGET): $(LDSCRIPT) $(OBJECTS)
 	$(LD) $(LDFLAGS) -T $(LDSCRIPT) $(OBJECTS) -o $@
 
 	@# Generate kernel symbols
-	$(SHELL) scripts/gen_symbols_map.sh $(TARGET) > $(BUILD_DIR)/symbols.map
+	$(NM) -n $(TARGET) > $(BUILD_DIR)/symbols.map
 	$(PYTHON) scripts/gen_symbols_asm.py $(BUILD_DIR)/symbols.map > $(BUILD_DIR)/symbols.S
 
 	@# Compile the symbols to an object
