@@ -5,6 +5,8 @@
 #include "bits.h"
 
 #define GIC_MASK_ALLOW_ALL_INTS 0xFF
+#define GIC_MAX_PPI 31
+
 
 // GIC Redistributor: Mark PEs as online
 static void gicr_wakeup()
@@ -53,15 +55,24 @@ void gicv3_enable_group_1_in_distributor()
     __asm__ volatile ("dsb sy");
 }
 
+// Set PPI to be in group 1 (ns) and unmask it
+void gicv3_enable_ppi(uint32_t ppi_number)
+{
+    if (ppi_number > GIC_MAX_PPI) {
+        printk("gicv3: error trying to enable PPI %u! (out-of-range)\n", ppi_number);
+        return;
+    }
+
+    mem_write_u32(GICR_REG_SGI_ISENABLER0, BIT(ppi_number));
+    mem_write_u32(GICR_REG_SGI_IGROUPR0, mem_read_u32(GICR_REG_SGI_IGROUPR0) | BIT(ppi_number));
+    printk("gicv3: enabled PPI #%u\n", ppi_number);
+}
+
 void init_gic()
 {
     printk("GICv3: Start initialization\n");
     gicr_wakeup();
-
-    // set virtual timer ppi (IRQ 27) to be in group1 (ns) and unmask it
-    mem_write_u32(GICR_REG_SGI_ISENABLER0, BIT(27));
-    mem_write_u32(GICR_REG_SGI_IGROUPR0, mem_read_u32(GICR_REG_SGI_IGROUPR0) | BIT(27));
-
+    gicv3_enable_ppi(27); // virtual timer PPI
     gicv3_enable_sysreg_access();
     gicv3_set_priority_mask(GIC_MASK_ALLOW_ALL_INTS); // 0 is the highest prio, so we are fine
     gicv3_enable_group_1_interrupts();
