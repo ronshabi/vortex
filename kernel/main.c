@@ -1,6 +1,7 @@
 #include <stdint.h>
 
 #include "gicv3.h"
+#include "timer.h"
 #include "uart.h"
 #include "printk.h"
 #include "logbuffer.h"
@@ -18,4 +19,5 @@ kmain(void)
 
     printk("-*- Vortex -*-\n");
     init_gic();
+    virtual_timer_enable();
 }
