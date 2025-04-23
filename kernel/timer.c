@@ -9,7 +9,7 @@ void virtual_timer_set_timer_value(uint64_t value);
 
 void virtual_timer_enable()
 {
-    virtual_timer_set_timer_value(0x3dfd240); // 65mhz
+    virtual_timer_set_timer_value(10 * 1000 * 1000); // 65mhz
     virtual_timer_set_control_reg(VIRTUAL_TIMER_CTL_ENABLED);
 }
 

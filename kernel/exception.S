@@ -49,7 +49,8 @@ vector_table_el1:
     
     // Offset :     0x280
     // Type   :     IRQ
-    vt_entry_not_implemented
+    .align 7
+    b irq_handler
 
     // Offset :     0x300
     // Type   :     FIQ
