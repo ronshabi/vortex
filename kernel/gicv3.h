@@ -28,10 +28,11 @@
 #define GICR_REG_SGI_IGRPMODR(n)                                               \
     (GICR_BASE + GICR_SGI_BASE + 0x0D00UL + (4 * (n)))
 
-    #define GICR_REG_TYPER      (GICR_BASE + 0x0008UL)
-#define GICR_REG_CTLR       (GICR_BASE + 0x0000UL)
-#define GICR_REG_WAKER      (GICR_BASE + 0x0014UL)
-#define GICR_REG_ISENABLER0 (GICR_BASE + GICR_SGI_BASE + 0x0180UL)
+#define GICR_REG_TYPER          (GICR_BASE + 0x0008UL)
+#define GICR_REG_CTLR           (GICR_BASE + 0x0000UL)
+#define GICR_REG_WAKER          (GICR_BASE + 0x0014UL)
+#define GICR_REG_SGI_ISENABLER0 (GICR_BASE + GICR_SGI_BASE + 0x0100UL)
+#define GICR_REG_SGI_IGROUPR0   (GICR_BASE + GICR_SGI_BASE + 0x0080UL)
 
 void init_gic();
 

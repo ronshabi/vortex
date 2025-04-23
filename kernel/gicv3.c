@@ -22,61 +22,37 @@ static void gicr_wakeup()
     }
 }
 
+
 void init_gic()
 {
     printk("GICv3: Start initialization\n");
-
-    printk("GICv3: Enable affinity rounting (ARE)\n");
-    mem_write_u32(GICR_REG_CTLR, (BIT(4) | BIT(5)));
-
-    printk("GICv3: Enable Group 1S, 1NS, 0 interrupts\n");
-    mem_write_u32(GICR_REG_CTLR, (BIT(4) | BIT(5) | 7));
-
-    // GIC Redistributor: Mark PEs as online
-    printk("GICv3: Try to wakeup redistributor\n");
     gicr_wakeup();
 
-    printk("GICv3: Set interrupt priority\n");
-    aarch64_write_icc_pmr_el1(0xFFUL);
+    // set virtual timer ppi (IRQ 27) to be in group1 (ns) and unmask it
+    mem_write_u32(GICR_REG_SGI_ISENABLER0, BIT(27));
+    mem_write_u32(GICR_REG_SGI_IGROUPR0, mem_read_u32(GICR_REG_SGI_IGROUPR0) | BIT(27));
 
-    printk("GICv3: Enable Group 0 interrupts\n");
-    aarch64_write_icc_igrpen0_el1(1);
+    // enable sysreg for controlling the interrupt controller 
+    uint64_t ICC_SRE_EL1 = 0;
+    __asm__ volatile ("mrs %0, ICC_SRE_EL1" : "=r"(ICC_SRE_EL1));
+    __asm__ volatile ("msr ICC_SRE_EL1, %0" : : "r"(ICC_SRE_EL1 | BIT(0)));
+    __asm__ volatile ("isb");
 
-    printk("GICv3: Enable Group 1 interrupts\n");
-    aarch64_write_icc_igrpen1_el1(1);
+    // unmask priority using sysreg
+    const uint64_t FF = 0xff; // allow all to pass thru, because 0 is the highest prio
+    __asm__ volatile ("msr ICC_PMR_EL1, %0" : : "r"(FF));
 
-    printk("GICv3: Finished initializing\n");
-}
+    // enable group1 (ns) delivery
+    const uint32_t ONE = 1;
+    __asm__ volatile ("msr ICC_IGRPEN1_EL1, %0" : : "r"(ONE));
+    __asm__ volatile ("isb");
+    
+    // enable the distributor
+    mem_write_u32(GICD_REG_CTLR, 0x2);
+    __asm__ volatile ("dsb sy");
 
-void enable_timer(void) // int 30
-{
-    // Setting interrupt priority
-    // ipriorityR of GICR (since this is a PPI)
-    // 30 // 4 = 7, so n=7 => IPRIORITYR<7>
-    // byte is 2, since 30mod4 = 2
-    // we need to write 00FF0000 to IPRIORITY<7>
-    // memory_write_u32(GICR_REG_IPRIORITYR(7), 0x00FF0000U);
-    mem_write_u8(GICR_REG_SGI_IPRIORITYR(7) + 2, 1);
-
-    // Setting interrupt group to group 0
-    // group register is for id 30, so it is register 0
-    uint32_t gicd_igroupr_0 = mem_read_u32(GICR_REG_SGI_IGROUPR(0));
-    uint32_t gicd_igrpmod_0 = mem_read_u32(GICR_REG_SGI_IGRPMODR(0));
-
-    gicd_igroupr_0 &= BIT_ALL_EXCEPT(30);
-    gicd_igrpmod_0 &= BIT_ALL_EXCEPT(30);
-
-    // update them groupz
-    mem_write_u32(GICR_REG_SGI_IGROUPR(0), gicd_igroupr_0);
-    mem_write_u32(GICR_REG_SGI_IGRPMODR(0), gicd_igrpmod_0);
-
-    // Now enable int 30
-    mem_write_u32(GICR_REG_ISENABLER0, BIT(30));
-
-    printk("VT: Set ticks\n");
-
-    aarch64_set_virtual_timer_ticks(1000000);
-    aarch64_set_virtal_timer_state(1);
-
-    printk("After\n");
+    uint64_t CNTFRQ_EL0 = 0;
+    __asm__ volatile ("mrs %0, CNTFRQ_EL0" : "=r"(CNTFRQ_EL0));
+    __asm__ volatile ("msr CNTV_TVAL_EL0, %0" : : "r"(CNTFRQ_EL0));
+    __asm__ volatile ("msr CNTV_CTL_EL0, %0" : : "r"(ONE));
 }

@@ -31,10 +31,10 @@ static inline void aarch64_write_icc_igrpen1_el1(uint64_t value)
 
 static inline void aarch64_set_virtual_timer_ticks(uint64_t value)
 {
-    __asm__ volatile ("msr CNTP_TVAL_EL0, %0" :: "r"(value));
+    __asm__ volatile ("msr CNTV_TVAL_EL0, %0" :: "r"(value));
 }
 
 static inline void aarch64_set_virtal_timer_state(uint64_t state)
 {
-    __asm__ volatile ("msr CNTP_CTL_EL0, %0; isb" :: "r"(state));
+    __asm__ volatile ("msr CNTV_CTL_EL0, %0; isb" :: "r"(state));
 }

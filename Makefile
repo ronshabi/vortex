@@ -3,6 +3,7 @@ CC := $(PREFIX)-gcc
 AS := $(PREFIX)-as
 LD := $(PREFIX)-ld
 NM := $(PREFIX)-nm
+OBJDUMP := $(PREFIX)-objdump
 
 PYTHON := python3
 
@@ -62,5 +63,13 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 .PHONY: qemu
-qemu:
+qemu: $(TARGET)
 	$(SHELL) scripts/qemu.sh $(TARGET)
+
+.PHONY: objdump-kernel
+objdump-kernel: $(TARGET)
+	$(OBJDUMP) \
+	--disassembler-color=extended \
+	--visualize-jumps=off \
+	-w -d -S \
+	$(TARGET) | less -R
