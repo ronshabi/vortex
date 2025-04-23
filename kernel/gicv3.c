@@ -1,4 +1,4 @@
-#include "gic_v3.h"
+#include "gicv3.h"
 #include "aarch64.h"
 #include "memory.h"
 #include "printk.h"
