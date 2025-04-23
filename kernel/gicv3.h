@@ -1,8 +1,10 @@
-// DEVICE TREE EXPLANATION:
-// https://android.googlesource.com/kernel/msm/+/android-7.1.0_r0.2/Documentation/devicetree/bindings/arm/gic-v3.txt
+// Good docs
 // https://developer.arm.com/documentation/198123/0302/Configuring-the-Arm-GIC
+// https://developer.arm.com/documentation/ihi0048/a/Glossary
+// https://developer.arm.com/documentation/ddi0595/2021-03/AArch32-Registers/CNTV-TVAL--Counter-timer-Virtual-Timer-TimerValue-register
 
-// reg (base-addr, size): GICD, GICR, [GICC], [GICH], [GICV]
+// IN DTS: reg (base-addr, size) := <GICD, GICR, [GICC], [GICH], [GICV]>
+// https://android.googlesource.com/kernel/msm/+/android-7.1.0_r0.2/Documentation/devicetree/bindings/arm/gic-v3.txt
 
 #pragma once
 
@@ -13,27 +15,8 @@
 #define GICR_SGI_BASE 0x10000U
 
 #define GICD_REG_CTLR         (GICD_BASE + 0x0UL)
-#define GICD_REG_TYPER        (GICD_BASE + 0x4UL)
-#define GICD_REG_ISENABLER(n) (GICD_BASE + 0x0100UL + (4 * (n)))
-
-#define GICD_REG_IPRIORITYR(n) (GICD_BASE + 0x0400UL + (4 * (n)))
-
-// GICR
-
-#define GICR_REG_SGI_IPRIORITYR(n)                                             \
-    (GICR_BASE + GICR_SGI_BASE + 0x0400UL + (4 * (n)))
-
-#define GICR_REG_SGI_IGROUPR(n)                                                \
-    (GICR_BASE + GICR_SGI_BASE + 0x0080UL + (4 * (n)))
-#define GICR_REG_SGI_IGRPMODR(n)                                               \
-    (GICR_BASE + GICR_SGI_BASE + 0x0D00UL + (4 * (n)))
-
-#define GICR_REG_TYPER          (GICR_BASE + 0x0008UL)
-#define GICR_REG_CTLR           (GICR_BASE + 0x0000UL)
 #define GICR_REG_WAKER          (GICR_BASE + 0x0014UL)
 #define GICR_REG_SGI_ISENABLER0 (GICR_BASE + GICR_SGI_BASE + 0x0100UL)
 #define GICR_REG_SGI_IGROUPR0   (GICR_BASE + GICR_SGI_BASE + 0x0080UL)
 
 void init_gic();
-
-void enable_timer();
