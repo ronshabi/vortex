@@ -22,8 +22,7 @@ extern uint64_t vortex_symbols_stringtbl_size
 extern uint64_t vortex_symbols_size __attribute__((section(".rodata"), weak));
 
 // for debugging purposes only
-void
-ksyms_print_all_symbols()
+void ksyms_print_all_symbols()
 {
     const uint64_t amount_of_symbols =
         vortex_symbols_size / sizeof(struct ksym_entry);
@@ -36,8 +35,7 @@ ksyms_print_all_symbols()
     }
 }
 
-const char *
-ksyms_addr2line(uint64_t addr)
+const char *ksyms_addr2line(uint64_t addr)
 {
     const uint64_t amount_of_symbols =
         vortex_symbols_size / sizeof(struct ksym_entry);

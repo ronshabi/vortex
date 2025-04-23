@@ -21,14 +21,12 @@ enum printk_state
     PARSING_FORMAT_SPECIFIER
 };
 
-static void
-uart_outfunc(int c)
+static void uart_outfunc(int c)
 {
     uart_write_ch(c);
 }
 
-static void
-pad_buffer(char *buf, size_t buf_len, int pad_width, char fill)
+static void pad_buffer(char *buf, size_t buf_len, int pad_width, char fill)
 {
     const int  text_len = (int)strlen(buf);
     const bool is_left  = pad_width < 0;
@@ -62,8 +60,7 @@ pad_buffer(char *buf, size_t buf_len, int pad_width, char fill)
     buf[text_len + pad_width] = '\0';
 }
 
-__attribute__((format(printf, 1, 2))) void
-printk(const char *fmt, ...)
+__attribute__((format(printf, 1, 2))) void printk(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);

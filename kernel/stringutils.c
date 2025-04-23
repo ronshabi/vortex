@@ -1,9 +1,8 @@
 #include "stringutils.h"
 #include "klibc.h"
 
-void
-string_from_uint64(uint64_t value, uint32_t base, char *outbuf,
-                   size_t outbuf_size, bool hexlower)
+void string_from_uint64(uint64_t value, uint32_t base, char *outbuf,
+                        size_t outbuf_size, bool hexlower)
 {
     size_t i = 0;
     memset8((uint8_t *)outbuf, 0, outbuf_size);
@@ -19,7 +18,8 @@ string_from_uint64(uint64_t value, uint32_t base, char *outbuf,
     {
         outbuf[i] = c_digits[(value % (uint64_t)base)];
 
-        if (outbuf[i] >= 'A' && outbuf[i] <= 'F' && hexlower) {
+        if (outbuf[i] >= 'A' && outbuf[i] <= 'F' && hexlower)
+        {
             outbuf[i] += 'a' - 'A';
         }
 
@@ -30,8 +30,7 @@ string_from_uint64(uint64_t value, uint32_t base, char *outbuf,
     string_reverse(outbuf, outbuf_size);
 }
 
-void
-string_from_int64(int64_t value, char *outbuf, size_t outbuf_size)
+void string_from_int64(int64_t value, char *outbuf, size_t outbuf_size)
 {
     size_t i                = 0;
     bool   should_add_minus = false;
@@ -64,8 +63,7 @@ string_from_int64(int64_t value, char *outbuf, size_t outbuf_size)
     string_reverse(outbuf, outbuf_size);
 }
 
-void
-string_reverse(char *buf, size_t buf_size)
+void string_reverse(char *buf, size_t buf_size)
 {
     size_t len = strnlen(buf, buf_size);
 

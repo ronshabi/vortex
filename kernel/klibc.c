@@ -1,7 +1,6 @@
 #include "klibc.h"
 
-void
-memset8(uint8_t *ptr, uint8_t c, uint64_t size)
+void memset8(uint8_t *ptr, uint8_t c, uint64_t size)
 {
     for (uint64_t i = 0; i < size; ++i)
     {
@@ -9,8 +8,7 @@ memset8(uint8_t *ptr, uint8_t c, uint64_t size)
     }
 }
 
-void *
-memcpy(void *dest, const void *src, size_t n)
+void *memcpy(void *dest, const void *src, size_t n)
 {
     uint8_t       *d = dest;
     const uint8_t *s = src;
@@ -30,8 +28,7 @@ memcpy(void *dest, const void *src, size_t n)
     return dest;
 }
 
-void *
-memmove(void *dest, const void *src, size_t n)
+void *memmove(void *dest, const void *src, size_t n)
 {
     // aliasing
     uint8_t       *d = dest;
@@ -70,14 +67,12 @@ memmove(void *dest, const void *src, size_t n)
     return dest;
 }
 
-size_t
-strlen(const char *s)
+size_t strlen(const char *s)
 {
     return strnlen(s, SIZE_MAX);
 }
 
-size_t
-strnlen(const char *s, size_t n)
+size_t strnlen(const char *s, size_t n)
 {
     size_t count = 0;
 
@@ -90,8 +85,7 @@ strnlen(const char *s, size_t n)
     return count;
 }
 
-char *
-strcpy(char *dest, const char *src)
+char *strcpy(char *dest, const char *src)
 {
     while (*src)
     {
@@ -102,8 +96,7 @@ strcpy(char *dest, const char *src)
 
     return (char *)src;
 }
-int
-atoi(const char *nptr)
+int atoi(const char *nptr)
 {
     int sum        = 0;
     int multiplier = 1;

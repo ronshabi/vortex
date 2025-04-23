@@ -1,16 +1,14 @@
 #include "logbuffer.h"
 #include "klibc.h"
 
-void
-log_buffer_init(struct log_buffer *lb)
+void log_buffer_init(struct log_buffer *lb)
 {
     memset8((uint8_t *)lb->buffer, 0, LOG_BUFFER_SIZE);
     lb->head = 0;
     lb->tail = 0;
 }
 
-int
-log_buffer_writech(struct log_buffer *lb, char c)
+int log_buffer_writech(struct log_buffer *lb, char c)
 {
     const size_t next = (lb->head + 1) % LOG_BUFFER_SIZE;
 
@@ -24,8 +22,7 @@ log_buffer_writech(struct log_buffer *lb, char c)
     return 1;
 }
 
-int
-log_buffer_writech_repeating(struct log_buffer *lb, char c, size_t n)
+int log_buffer_writech_repeating(struct log_buffer *lb, char c, size_t n)
 {
     int res = 0;
 
@@ -37,8 +34,7 @@ log_buffer_writech_repeating(struct log_buffer *lb, char c, size_t n)
     return res;
 }
 
-int
-log_buffer_write(struct log_buffer *lb, const char *str)
+int log_buffer_write(struct log_buffer *lb, const char *str)
 {
     int res = 0;
     while (*str)
@@ -50,8 +46,7 @@ log_buffer_write(struct log_buffer *lb, const char *str)
     return res;
 }
 
-int
-log_buffer_readch(struct log_buffer *lb)
+int log_buffer_readch(struct log_buffer *lb)
 {
     if (lb->tail == lb->head)
     {
@@ -63,8 +58,7 @@ log_buffer_readch(struct log_buffer *lb)
     return o;
 }
 
-void
-log_buffer_flush(struct log_buffer *lb, void (*outfunc)(int c))
+void log_buffer_flush(struct log_buffer *lb, void (*outfunc)(int c))
 {
     while (lb->tail != lb->head)
     {

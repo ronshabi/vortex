@@ -73,3 +73,7 @@ objdump-kernel: $(TARGET)
 	--visualize-jumps=off \
 	-w -d -S \
 	$(TARGET) | less -R
+
+.PHONY: format
+format:
+	find 'kernel' -type f -name '*.[ch]' -exec clang-format --verbose -i '{}' '+'

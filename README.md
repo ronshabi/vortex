@@ -6,6 +6,7 @@ Coded from scratch by Ron Shabi, mainly to learn the architecture.
 - Globally usable, buffered `printk`
 - Exception handler
 - KSyms with an `addr2line`-like interface and unwind support
+- GICv3 Support
 - Virtual timer IRQ
 
 ## Building
