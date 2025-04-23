@@ -5,7 +5,6 @@
 #define VIRTUAL_TIMER_CTL_ENABLED 1
 
 void virtual_timer_set_control_reg(uint32_t value);
-void virtual_timer_set_timer_value(uint64_t value);
 
 void virtual_timer_enable()
 {

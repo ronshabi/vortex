@@ -203,5 +203,7 @@ panic_prepare:
 prepare_irq:
     BACKUP_REGISTERS
     bl irq_handler
-    
+    RESTORE_REGISTERS
+    eret
+
 .size prepare_irq, (. - prepare_irq)
