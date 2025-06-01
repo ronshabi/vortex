@@ -72,7 +72,7 @@ def gen_asm(filename: str):
         symbol_addr, symbol_type, symbol_name = symbol
         symbol_name = f'"{symbol_name}"'
         print(f".asciz {symbol_name:<32}; // @{symbol_name_offset}")
-        symbol_name_offset += len(symbol_name) + 1
+        symbol_name_offset += len(symbol_name) - 1  # Take quotemarks in account
 
     print(
         f"\n.size {LABEL_SYMBOL_SECTION_STRINGTABLE}, (. - {LABEL_SYMBOL_SECTION_STRINGTABLE})\n"
