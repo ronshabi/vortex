@@ -12,10 +12,10 @@ static void gicr_wakeup()
 {
     volatile uint32_t current_waker = mem_read_u32(GICR_REG_WAKER);
 
-    // Mark `ProcessorSleep` (bit 1) to be 0
+    // Mark 'ProcessorSleep' (bit 1) to be 0
     mem_write_u32(GICR_REG_WAKER, current_waker & BIT_ALL_EXCEPT(1));
 
-    // Poll `ChildrenAsleep` (bit 2) until it is zero
+    // Poll 'ChildrenAsleep' (bit 2) until it is zero
     while (1)
     {
         current_waker = mem_read_u32(GICR_REG_WAKER);
@@ -61,7 +61,7 @@ void gicv3_enable_ppi(uint32_t ppi_number)
 {
     if (ppi_number > GIC_MAX_PPI)
     {
-        printk("gicv3: error trying to enable PPI %u! (out-of-range)\n",
+        printk("gicv3: Error trying to enable PPI %u! (out-of-range)\n",
                ppi_number);
         return;
     }
@@ -69,12 +69,12 @@ void gicv3_enable_ppi(uint32_t ppi_number)
     mem_write_u32(GICR_REG_SGI_ISENABLER0, BIT(ppi_number));
     mem_write_u32(GICR_REG_SGI_IGROUPR0,
                   mem_read_u32(GICR_REG_SGI_IGROUPR0) | BIT(ppi_number));
-    printk("gicv3: enabled PPI #%u\n", ppi_number);
+    printk("gicv3: Enabled PPI #%u\n", ppi_number);
 }
 
 void init_gic()
 {
-    printk("GICv3: Start initialization\n");
+    printk("GICv3: Initialize\n");
     gicr_wakeup();
     gicv3_enable_ppi(27); // virtual timer PPI
     gicv3_enable_sysreg_access();
