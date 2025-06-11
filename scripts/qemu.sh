@@ -18,6 +18,9 @@ for word in $TRACING; do
     TRACING_OPTS+="--trace $word " 
 done
 
+# For testing purposes, we must create a DTB and DTS, so until we have a "normal"
+# DT parser - we can stay updated on our system's configuration
+
 qemu-system-aarch64 -machine virt,gic-version=3 \
                     -cpu cortex-a72 \
                     -m 128m \
