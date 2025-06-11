@@ -23,7 +23,7 @@ __attribute__((noreturn)) void panic(struct exception_info *info)
     printk(ANSI_CYAN "General Purpose Registers:" ANSI_RESET "\n");
     for (unsigned r = 0; r < AARCH64_GENERAL_REGISTERS; ++r)
     {
-        printk(ANSI_BOLD "0x%02d" ANSI_RESET ": 0x%08lX  ", r, info->regs[r]);
+        printk(ANSI_BOLD "x%02d" ANSI_RESET ": 0x%016lX  ", r, info->regs[r]);
 
         if ((r + 1) % 4 == 0)
         {
