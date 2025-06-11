@@ -5,9 +5,12 @@
 #include "printk.h"
 #include "timer.h"
 #include "uart.h"
+#include "virtio.h"
 
 struct log_buffer  printk_log_buffer;
 struct log_buffer *printk_log_buffer_ptr;
+
+struct virtio_mmio_device virtio;
 
 void kmain(void)
 {
@@ -18,5 +21,8 @@ void kmain(void)
 
     printk("-*- Vortex -*-\n");
     init_gic();
-    virtual_timer_enable();
+    // virtual_timer_enable();
+
+    init_virtio_mmio_device(&virtio, "idk yet",
+                            (uint8_t *)0xa000000); // from dts
 }

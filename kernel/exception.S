@@ -65,15 +65,14 @@
 
 
 .macro RESTORE_REGISTERS
-    add sp, sp, #size_of_exception_info_struct
 
     // load 'em all, 2 registers are 16 bytes = 0x10
     // uint64_t regs[AARCH64_GENERAL_REGISTERS]
-    ldp x0, x1,  [sp, #0x00]
-    ldp x2, x3,  [sp, #0x10]
-    ldp x4, x5,  [sp, #0x20]
-    ldp x6, x7,  [sp, #0x30]
-    ldp x8, x9,  [sp, #0x40]
+    ldp x0, x1,   [sp, #0x00]
+    ldp x2, x3,   [sp, #0x10]
+    ldp x4, x5,   [sp, #0x20]
+    ldp x6, x7,   [sp, #0x30]
+    ldp x8, x9,   [sp, #0x40]
     ldp x10, x11, [sp, #0x50]
     ldp x12, x13, [sp, #0x60]
     ldp x14, x15, [sp, #0x70]
@@ -85,6 +84,8 @@
     ldp x26, x27, [sp, #0xD0]
     ldp x28, x29, [sp, #0xE0]
     str x30,      [sp, #0xF0]
+    add sp, sp, #size_of_exception_info_struct
+
 
 .endm
 
