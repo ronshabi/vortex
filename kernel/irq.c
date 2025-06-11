@@ -18,7 +18,7 @@ void irq_handler(struct exception_info *info)
     {
     case INTID_VIRTUAL_TIMER:
         printk("IRQ Handler: Virtual Timer\n");
-        virtual_timer_set_timer_value(65 * 1000 * 1000);
+        virtual_timer_set_timer_value(40 * 1000 * 1000);
 
         uint64_t sp = 0;
         __asm__ volatile ("mov %0, sp" : "=r"(sp));
@@ -36,7 +36,7 @@ void irq_handler(struct exception_info *info)
         panic(info);
         break;
     default:
-        printk("IRQ Handler: Unknown INTID %u!\n", intid);
+        printk("IRQ Handler: Unknown INTID %lu!\n", intid);
         panic(info);
         break;
     }
