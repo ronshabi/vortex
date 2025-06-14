@@ -1,3 +1,12 @@
+# --- NOTICE -------------------------------------------------------------------
+# This makefile is RETIRED. CMake is used instead. This is here just incase
+# some CMake bug happens, and I need a good reference to how the build used
+# to be.
+#
+# ~ Ron
+# ------------------------------------------------------------------------------
+
+
 PREFIX := aarch64-none-elf
 CC := $(PREFIX)-gcc
 AS := $(PREFIX)-as
