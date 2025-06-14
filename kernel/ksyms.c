@@ -1,6 +1,5 @@
 #include "ksyms.h"
 
-#include "config.h"
 #include "printk.h"
 
 #include <stddef.h>
@@ -30,7 +29,7 @@ void ksyms_print_all_symbols()
     for (uint64_t i = 0; i < amount_of_symbols; ++i)
     {
         const struct ksym_entry sym = vortex_symbols[i];
-        printk("[0x%lX, %s]\n", sym.addr + CONF_BASEADDR,
+        printk("[0x%lX, %s]\n", sym.addr + VORTEX_CONF_BASE_ADDRESS,
                vortex_symbols_stringtbl + sym.string_offset);
     }
 }
@@ -45,7 +44,7 @@ const char *ksyms_addr2line(uint64_t addr)
         const struct ksym_entry sym      = vortex_symbols[i];
         const struct ksym_entry sym_next = vortex_symbols[i + 1];
 
-        if (sym_next.addr + CONF_BASEADDR >= addr)
+        if (sym_next.addr + VORTEX_CONF_BASE_ADDRESS >= addr)
         {
             return vortex_symbols_stringtbl + sym.string_offset;
         }

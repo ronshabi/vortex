@@ -1,10 +1,8 @@
 #include <stdint.h>
 
-#include "gicv3.h"
 #include "logbuffer.h"
 #include "pci.h"
 #include "printk.h"
-#include "timer.h"
 #include "uart.h"
 #include "virtio.h"
 

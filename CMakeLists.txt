@@ -9,7 +9,6 @@ message(STATUS "Source dir: ${CMAKE_SOURCE_DIR}")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 set(CMAKE_COLOR_MAKEFILE ON)
-
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_ASM_COMPILER clang)
 set(CMAKE_AR_COMPILER clang)
@@ -41,7 +40,6 @@ set(kernel_sources
     "kernel/bits.h"
     "kernel/boot.S"
     "kernel/byteswap.h"
-    "kernel/config.h"
     "kernel/debugging.c"
     "kernel/debugging.h"
     "kernel/exception_info.c"
@@ -74,7 +72,6 @@ set(kernel_sources
     "kernel/uart.h"
     "kernel/virtio.c"
     "kernel/virtio.h"
-    
     "kernel/libc/ctype.c"
     "kernel/libc/ctype.h"
     "kernel/libc/string.h"
@@ -88,13 +85,16 @@ add_executable(
     ${kernel_sources}
 )
 
-target_compile_options(vortex_nosyms PRIVATE ${cflags_cross})
-target_compile_options(vortex_nosyms PRIVATE ${cflags_common})
+target_compile_options(vortex_nosyms PUBLIC ${cflags_cross})
+target_compile_options(vortex_nosyms PUBLIC ${cflags_common})
 set_target_properties(vortex_nosyms PROPERTIES LINK_DEPENDS "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 set_target_properties(vortex_nosyms PROPERTIES LINKER_TYPE "LLD")
 
-target_link_options(vortex_nosyms PRIVATE ${cflags_cross} ${cflags_common})
-target_link_options(vortex_nosyms PRIVATE "LINKER:-T" "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
+target_link_options(vortex_nosyms PUBLIC ${cflags_cross} ${cflags_common})
+target_link_options(vortex_nosyms PUBLIC "LINKER:-T" "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
+
+# Some kernel config
+target_compile_definitions(vortex_nosyms PUBLIC "VORTEX_CONF_BASE_ADDRESS=0x40100000")
 
 # Generate ksyms
 
@@ -122,8 +122,8 @@ add_executable(
 )
 
 
-target_compile_options(vortex PRIVATE ${cflags_cross} ${cflags_common})
+target_compile_options(vortex PUBLIC ${cflags_cross} ${cflags_common})
 set_target_properties(vortex PROPERTIES LINK_DEPENDS "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 set_target_properties(vortex PROPERTIES LINKER_TYPE "LLD")
-target_link_options(vortex PRIVATE ${cflags_cross} ${cflags_common})
-target_link_options(vortex PRIVATE "LINKER:-T" "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
+target_link_options(vortex PUBLIC ${cflags_cross} ${cflags_common})
+target_link_options(vortex PUBLIC "LINKER:-T" "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
