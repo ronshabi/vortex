@@ -6,17 +6,9 @@
 // IN DTS: reg (base-addr, size) := <GICD, GICR, [GICC], [GICH], [GICV]>
 // https://android.googlesource.com/kernel/msm/+/android-7.1.0_r0.2/Documentation/devicetree/bindings/arm/gic-v3.txt
 
+#include <stdint.h>
+
 #pragma once
 
-#define GICD_BASE     0x8000000UL
-#define GICD_SIZE     0x10000UL
-#define GICR_BASE     0x80a0000UL
-#define GICR_SIZE     0xf60000UL
-#define GICR_SGI_BASE 0x10000U
-
-#define GICD_REG_CTLR           (GICD_BASE + 0x0UL)
-#define GICR_REG_WAKER          (GICR_BASE + 0x0014UL)
-#define GICR_REG_SGI_ISENABLER0 (GICR_BASE + GICR_SGI_BASE + 0x0100UL)
-#define GICR_REG_SGI_IGROUPR0   (GICR_BASE + GICR_SGI_BASE + 0x0080UL)
-
-void init_gic();
+void gicv3_init();
+void gicv3_enable_interrupt(uint64_t intno);
