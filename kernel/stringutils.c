@@ -1,5 +1,5 @@
 #include "stringutils.h"
-#include "klibc.h"
+#include "libc/string.h"
 
 void string_from_uint64(uint64_t value, uint32_t base, char *outbuf,
                         size_t outbuf_size, bool hexlower)

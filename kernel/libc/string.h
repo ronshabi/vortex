@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VORTEX_KLIBC_STRING__
+#define VORTEX_KLIBC_STRING__
 
 #include <stddef.h>
 #include <stdint.h>
@@ -10,9 +11,4 @@ size_t strlen(const char *s);
 size_t strnlen(const char *s, size_t n);
 char  *strcpy(char *dest, const char *src);
 
-static inline int isdigit(int c)
-{
-    return c >= '0' && c <= '9';
-}
-
-int atoi(const char *nptr);
+#endif

@@ -1,8 +1,9 @@
 #include "virtio.h"
 #include "debugging.h"
-#include "klibc.h"
 #include "memory.h"
 #include "printk.h"
+
+#include "libc/string.h"
 
 // Note (Ron): look at
 // 4.2.3 MMIO-specific Initialization And Device Operation

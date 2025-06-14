@@ -36,14 +36,6 @@ set(cflags_common
     "-fno-lto"
 )
 
-# add_library(klibc STATIC
-#     "klibc/klibc.c"
-#     "klibc/klibc.h"
-# )
-
-# target_compile_options(klibc PRIVATE ${cflags_cross}) 
-# target_compile_options(klibc PRIVATE )
-
 set(kernel_sources
     "kernel/aarch64.h"
     "kernel/bits.h"
@@ -60,8 +52,6 @@ set(kernel_sources
     "kernel/halt.S"
     "kernel/irq.c"
     "kernel/irq.h"
-    "kernel/klibc.c"
-    "kernel/klibc.h"
     "kernel/ksyms.c"
     "kernel/ksyms.h"
     "kernel/logbuffer.c"
@@ -71,6 +61,8 @@ set(kernel_sources
     "kernel/memory.h"
     "kernel/panic.c"
     "kernel/panic.h"
+    "kernel/pci.c"
+    "kernel/pci.h"
     "kernel/printk.c"
     "kernel/printk.h"
     "kernel/stringutils.c"
@@ -82,8 +74,13 @@ set(kernel_sources
     "kernel/uart.h"
     "kernel/virtio.c"
     "kernel/virtio.h"
-    "kernel/pci.c"
-    "kernel/pci.h"
+    
+    "kernel/libc/ctype.c"
+    "kernel/libc/ctype.h"
+    "kernel/libc/string.h"
+    "kernel/libc/stdlib.h"
+    "kernel/libc/stdlib.c"
+    "kernel/libc/string.c"
 )
 
 add_executable(
