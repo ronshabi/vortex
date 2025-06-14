@@ -127,3 +127,13 @@ set_target_properties(vortex PROPERTIES LINK_DEPENDS "${CMAKE_SOURCE_DIR}/kernel
 set_target_properties(vortex PROPERTIES LINKER_TYPE "LLD")
 target_link_options(vortex PUBLIC ${cflags_cross} ${cflags_common})
 target_link_options(vortex PUBLIC "LINKER:-T" "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
+
+# Run from ninja!
+
+add_custom_target(qemu
+    python3 ${CMAKE_SOURCE_DIR}/scripts/run.py "$<TARGET_FILE:vortex>"
+    DEPENDS "$<TARGET_FILE:vortex>"
+    COMMENT "Running QEMU"
+    VERBATIM
+    USES_TERMINAL
+)
