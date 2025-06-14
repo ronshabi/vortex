@@ -91,7 +91,9 @@ void gicv3_enable_interrupt(uint64_t intno)
     }
     else
     {
-        printk("[GICv3] Error: Unknown interrupt number %lu\n", intno);
+        printk(
+            "[GICv3] Error: Unknown interrupt number %lu, doing nothing...\n",
+            intno);
     }
 }
 
