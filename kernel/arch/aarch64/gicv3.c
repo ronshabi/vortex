@@ -1,8 +1,8 @@
-#include "gicv3.h"
-#include "aarch64.h"
-#include "bits.h"
-#include "memory.h"
-#include "printk.h"
+#include <arch/aarch64/aarch64.h>
+#include <arch/aarch64/gicv3.h>
+#include <common/bitops.h>
+#include <memory.h>
+#include <printk.h>
 
 #define GIC_MASK_ALLOW_ALL_INTS 0xFF
 #define GIC_MAX_PPI             31

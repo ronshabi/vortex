@@ -1,15 +1,11 @@
 #include <stdint.h>
 
-#include "logbuffer.h"
-#include "pci.h"
-#include "printk.h"
-#include "uart.h"
-#include "virtio.h"
+#include <drivers/uart.h>
+#include <logbuffer.h>
+#include <printk.h>
 
 struct log_buffer  printk_log_buffer;
 struct log_buffer *printk_log_buffer_ptr;
-
-struct virtio_mmio_device virtio;
 
 void kmain(void)
 {
@@ -25,6 +21,4 @@ void kmain(void)
 
     // init_virtio_mmio_device(&virtio, "idk yet",
     // (uint8_t *)0xa000000ULL); // from dts
-
-    pci_init();
 }

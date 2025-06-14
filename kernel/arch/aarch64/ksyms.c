@@ -1,6 +1,6 @@
-#include "ksyms.h"
+#include <arch/aarch64/ksyms.h>
 
-#include "printk.h"
+#include <printk.h>
 
 #include <stddef.h>
 #include <stdint.h>

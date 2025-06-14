@@ -1,6 +1,6 @@
-#include "debugging.h"
-#include "memory.h"
-#include "printk.h"
+#include <debugging.h>
+#include <memory.h>
+#include <printk.h>
 #include <stdint.h>
 
 void hexdump(uint8_t *ptr, uint64_t size)

@@ -1,6 +1,6 @@
-#include "panic.h"
-#include "ksyms.h"
-#include "printk.h"
+#include <arch/aarch64/ksyms.h>
+#include <arch/aarch64/panic.h>
+#include <printk.h>
 
 // Get 'halt' from asm world
 extern void __attribute__((noreturn)) halt(void);

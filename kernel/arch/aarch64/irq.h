@@ -1,4 +1,4 @@
 #pragma once
-#include "exception_info.h"
+#include <arch/aarch64/exception_info.h>
 
 void irq_handler(struct exception_info *info);

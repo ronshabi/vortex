@@ -1,12 +1,12 @@
-#include "printk.h"
-#include "logbuffer.h"
-#include "stringutils.h"
-#include "uart.h"
+#include <common/stringutils.h>
+#include <drivers/uart.h>
+#include <logbuffer.h>
+#include <printk.h>
 #include <stdarg.h>
 
-#include "libc/ctype.h"
-#include "libc/stdlib.h"
-#include "libc/string.h"
+#include <libc/ctype.h>
+#include <libc/stdlib.h>
+#include <libc/string.h>
 
 #define PRINTK_CONV_BUFSIZE 1024
 

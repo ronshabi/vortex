@@ -1,6 +1,6 @@
 #include "pci.h"
-#include "memory.h"
-#include "printk.h"
+#include <memory.h>
+#include <printk.h>
 #include <stdint.h>
 
 static uint32_t readreg(uint64_t offset)

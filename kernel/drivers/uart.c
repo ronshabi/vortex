@@ -1,5 +1,5 @@
-#include "uart.h"
-#include "memory.h"
+#include <drivers/uart.h>
+#include <memory.h>
 
 volatile uint8_t *aarch64_virt_uart_addr = (uint8_t *)0x09000000;
 

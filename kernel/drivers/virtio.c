@@ -1,7 +1,7 @@
-#include "virtio.h"
-#include "debugging.h"
-#include "memory.h"
-#include "printk.h"
+#include <debugging.h>
+#include <drivers/virtio.h>
+#include <memory.h>
+#include <printk.h>
 
 #include "libc/string.h"
 
