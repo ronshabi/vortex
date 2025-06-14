@@ -21,7 +21,7 @@ ASFLAGS = -g
 
 OBJECTS = main.o boot.o printk.o uart.o logbuffer.o klibc.o \
           stringutils.o exception_info.o panic.o exception.o halt.o \
-		  ksyms.o memory.o gicv3.o timer.o irq.o virtio.o debugging.o
+		  ksyms.o memory.o gicv3.o timer.o irq.o virtio.o debugging.o pci.o
 
 TARGET = kernel.elf
 
@@ -64,7 +64,7 @@ clean:
 
 .PHONY: qemu
 qemu: $(TARGET)
-	$(SHELL) scripts/qemu.sh $(TARGET)
+	$(PYTHON) scripts/run.py $(TARGET)
 
 .PHONY: objdump-kernel
 objdump-kernel: $(TARGET)

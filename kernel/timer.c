@@ -4,7 +4,7 @@
 
 #define VIRTUAL_TIMER_CTL_ENABLED 1
 
-void virtual_timer_set_control_reg(uint32_t value);
+void virtual_timer_set_control_reg(uint64_t value);
 
 void virtual_timer_enable()
 {
@@ -12,7 +12,7 @@ void virtual_timer_enable()
     virtual_timer_set_control_reg(VIRTUAL_TIMER_CTL_ENABLED);
 }
 
-void virtual_timer_set_control_reg(uint32_t value)
+void virtual_timer_set_control_reg(uint64_t value)
 {
     __asm__ volatile("msr CNTV_CTL_EL0, %0" : : "r"(value));
 }

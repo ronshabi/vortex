@@ -2,6 +2,7 @@
 
 #include "gicv3.h"
 #include "logbuffer.h"
+#include "pci.h"
 #include "printk.h"
 #include "timer.h"
 #include "uart.h"
@@ -20,9 +21,12 @@ void kmain(void)
     uart_init();
 
     printk("-*- Vortex -*-\n");
-    init_gic();
+
+    // init_gic();
     // virtual_timer_enable();
 
-    init_virtio_mmio_device(&virtio, "idk yet",
-                            (uint8_t *)0xa000000); // from dts
+    // init_virtio_mmio_device(&virtio, "idk yet",
+    // (uint8_t *)0xa000000ULL); // from dts
+
+    pci_init();
 }

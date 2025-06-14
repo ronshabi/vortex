@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import os
 import subprocess
 import sys
@@ -18,7 +20,16 @@ QEMU_MEMORY = "128m"
 
 QEMU_DEVICES = []
 
-QEMU_TRACING_OPTS = ["gicv3_*", "virtio_mmio_*", "virtio_iommu*"]
+QEMU_TRACING_OPTS = [
+    "gicv3_*",
+    "virtio_*",
+    "virtio_iommu*",
+    "acpi_*",
+    "pci_*",
+    "qemu_vfio*",
+    "vfio_*",
+]
+
 QEMU_DEBUG_MESSAGES = ["int", "cpu_reset", "strace", "unimp", "guest_errors", "strace"]
 
 QEMU_ADDITIONAL_ARGUMENTS = ["-nographic"]
@@ -28,9 +39,17 @@ QEMU_DEVICES.append(
     f"loader,file={KERNEL},addr={KERNEL_LOAD_ADDR:X},cpu-num={KERNEL_LOAD_CPU_NUM}"
 )
 
+# https://wiki.debian.org/Arm64Qemu
+# Debian for Arm64 uses usb-ehci, so we will use it instead of XHCI
+QEMU_DEVICES.append("usb-ehci")
+QEMU_DEVICES.append("usb-kbd")
+
 
 def build_command(dump_dtb_file_name=None):
     cmd = [QEMU]
+
+    # Add all additional arguments
+    cmd.extend(QEMU_ADDITIONAL_ARGUMENTS)
 
     # Add machine
     machine_string = f"{QEMU_MACHINE},gic-version={QEMU_GIC_VERSION}"
@@ -56,9 +75,6 @@ def build_command(dump_dtb_file_name=None):
     # Add all tracing messages
     for tracing_opt in QEMU_TRACING_OPTS:
         cmd.extend(["--trace", tracing_opt])
-
-    # Add all additional arguments
-    cmd.extend(QEMU_ADDITIONAL_ARGUMENTS)
 
     return cmd
 

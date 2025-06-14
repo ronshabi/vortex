@@ -44,7 +44,7 @@ void gicv3_set_priority_mask(uint64_t mask)
 void gicv3_enable_group_1_interrupts()
 {
     // enable group1 (ns in qemu's virt) delivery
-    const uint32_t ONE = 1;
+    const uint64_t ONE = 1;
     __asm__ volatile("msr ICC_IGRPEN1_EL1, %0" : : "r"(ONE));
     __asm__ volatile("isb");
 }

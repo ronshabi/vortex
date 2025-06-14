@@ -2,3 +2,7 @@
 *.dtb
 *.dts
 build/
+TODO
+.cache/
+.vscode/
+.idea/
