@@ -1,3 +1,6 @@
+#include "arch/aarch64/timer.h"
+#include <devicetree/devicetree.h>
+#include "drivers/pci.h"
 #include <stdint.h>
 
 #include <drivers/uart.h>
@@ -9,6 +12,8 @@
 struct log_buffer  printk_log_buffer;
 struct log_buffer *printk_log_buffer_ptr;
 
+struct devicetree devicetree;
+
 void kmain(void)
 {
     log_buffer_init(&printk_log_buffer);
@@ -18,11 +23,19 @@ void kmain(void)
 
     printk("-*- Vortex -*-\n");
 
-    gicv3_init();
-    gicv3_enable_interrupt(27); // Virtual Timer PPI
+    devicetree_init(&devicetree, 0x40000000);
+    devicetree_parse(&devicetree);
+
 
     // virtual_timer_enable();
 
+
+    // gicv3_init();
+    // gicv3_enable_interrupt(27); // Virtual Timer PPI
+
+
     // init_virtio_mmio_device(&virtio, "idk yet",
     // (uint8_t *)0xa000000ULL); // from dts
+
+    pci_init();
 }

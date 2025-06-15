@@ -4,9 +4,9 @@
 #include <printk.h>
 #include <stdarg.h>
 
-#include <libc/ctype.h>
-#include <libc/stdlib.h>
-#include <libc/string.h>
+#include <klibc/ctype.h>
+#include <klibc/stdlib.h>
+#include <klibc/string.h>
 
 #define PRINTK_CONV_BUFSIZE 1024
 

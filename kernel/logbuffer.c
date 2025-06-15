@@ -1,5 +1,5 @@
 #include "logbuffer.h"
-#include <libc/string.h>
+#include <klibc/string.h>
 
 void log_buffer_init(struct log_buffer *lb)
 {

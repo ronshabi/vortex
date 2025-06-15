@@ -57,6 +57,8 @@ set(kernel_sources
 "kernel/common/stringutils.h"
 "kernel/debugging.c"
 "kernel/debugging.h"
+"kernel/devicetree/devicetree.c"
+"kernel/devicetree/devicetree.h"
 "kernel/drivers/pci.c"
 "kernel/drivers/pci.h"
 "kernel/drivers/uart.c"

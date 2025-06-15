@@ -23,11 +23,17 @@ QEMU_DEVICES = []
 QEMU_TRACING_OPTS = [
     "gicv3_*",
     "virtio_*",
-    "virtio_iommu*",
     "acpi_*",
     "pci_*",
     "qemu_vfio*",
     "vfio_*",
+    "dma_*",
+    "cpu_*",
+    "usb_*",
+    "uefi_*",
+    "arm_*",
+    "clock_*",
+    "system_wakeup_request",
 ]
 
 QEMU_DEBUG_MESSAGES = ["int", "cpu_reset", "strace", "unimp", "guest_errors", "strace"]
@@ -43,6 +49,7 @@ QEMU_DEVICES.append(
 # Debian for Arm64 uses usb-ehci, so we will use it instead of XHCI
 QEMU_DEVICES.append("usb-ehci")
 QEMU_DEVICES.append("usb-kbd")
+QEMU_DEVICES.append("virtio-gpu-pci")
 
 
 def build_command(dump_dtb_file_name=None):
