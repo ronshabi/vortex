@@ -63,13 +63,13 @@ set(kernel_sources
 "kernel/drivers/uart.h"
 "kernel/drivers/virtio.c"
 "kernel/drivers/virtio.h"
-"kernel/libc/byteswap.h"
-"kernel/libc/ctype.c"
-"kernel/libc/ctype.h"
-"kernel/libc/stdlib.c"
-"kernel/libc/stdlib.h"
-"kernel/libc/string.c"
-"kernel/libc/string.h"
+"kernel/klibc/byteswap.h"
+"kernel/klibc/ctype.c"
+"kernel/klibc/ctype.h"
+"kernel/klibc/stdlib.c"
+"kernel/klibc/stdlib.h"
+"kernel/klibc/string.c"
+"kernel/klibc/string.h"
 "kernel/logbuffer.c"
 "kernel/logbuffer.h"
 "kernel/main.c"
@@ -96,6 +96,7 @@ target_link_options(vortex_nosyms PUBLIC ${cflags_cross} ${cflags_common})
 target_link_options(vortex_nosyms PUBLIC "LINKER:-T" "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 
 # Some kernel config
+target_compile_definitions(vortex_nosyms PUBLIC "VORTEXLE=1") # Little Endian
 target_compile_definitions(vortex_nosyms PUBLIC "VORTEX_CONF_BASE_ADDRESS=0x40100000")
 
 # Generate ksyms
