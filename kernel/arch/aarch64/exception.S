@@ -139,51 +139,18 @@ vector_table_el1:
     // Type   :     SError
     vt_entry_not_implemented
 
-
-    // ----------------------------------------------------
-
-    //
-    // From a lower EL, lower is AArch64
-    //
-
-    // Offset :     0x400
-    // Type   :     Synchronous
-    vt_entry_not_implemented
-    
-    // Offset :     0x480
-    // Type   :     IRQ
-    vt_entry_not_implemented
-
-    // Offset :     0x500
-    // Type   :     FIQ
-    vt_entry_not_implemented
-
-    // Offset :     0x580
-    // Type   :     SError
-    vt_entry_not_implemented
-
-
-    // ----------------------------------------------------
-
-    //
-    // From a lower EL, lower is AArch32
-    //
-
-    // Offset :     0x600
-    // Type   :     Synchronous
-    vt_entry_not_implemented
-    
-    // Offset :     0x680
-    // Type   :     IRQ
-    vt_entry_not_implemented
-
-    // Offset :     0x700
-    // Type   :     FIQ
-    vt_entry_not_implemented
-
-    // Offset :     0x780
-    // Type   :     SError
-    vt_entry_not_implemented
+    // -------------------------------------------------------------------------
+    // From a lower EL, lower is AArch64 (unused)
+    vt_entry_not_implemented        // Offset: 0x400, Synchronous
+    vt_entry_not_implemented        // Offset: 0x480, IRQ
+    vt_entry_not_implemented        // Offset: 0x500, FIQ
+    vt_entry_not_implemented        // Offset: 0x580, SError
+    // From a lower EL, lower is AArch32 (unused)
+    vt_entry_not_implemented        // Offset: 0x600, Synchronous
+    vt_entry_not_implemented        // Offset: 0x680, IRQ
+    vt_entry_not_implemented        // Offset: 0x700, FIQ
+    vt_entry_not_implemented        // Offset: 0x780, SError
+    // -------------------------------------------------------------------------
 
 .size vector_table_el1, (. - vector_table_el1)
 
