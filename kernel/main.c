@@ -12,7 +12,15 @@
 struct log_buffer  printk_log_buffer;
 struct log_buffer *printk_log_buffer_ptr;
 
-struct devicetree devicetree;
+// struct devicetree devicetree;
+
+#define KMEM_BASE 0x40200000
+#define KMEM_SIZE 0x100000      // 1MiB
+
+void do_exception(void) {
+    void (*p)(void) = (void*)0;
+    p();
+}
 
 void kmain(void)
 {
@@ -23,9 +31,10 @@ void kmain(void)
 
     printk("-*- Vortex -*-\n");
 
-    devicetree_init(&devicetree, 0x40000000);
-    devicetree_parse(&devicetree);
+    // devicetree_init(&devicetree, 0x40000000);
+    // devicetree_parse(&devicetree);
 
+    do_exception();
 
     // virtual_timer_enable();
 
@@ -37,5 +46,5 @@ void kmain(void)
     // init_virtio_mmio_device(&virtio, "idk yet",
     // (uint8_t *)0xa000000ULL); // from dts
 
-    pci_init();
+    // pci_init();
 }

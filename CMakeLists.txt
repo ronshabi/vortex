@@ -28,7 +28,7 @@ set(cflags_common
     "-Wformat"
     "-Wconversion"
     "-std=c99"
-    "-g"
+    "-ggdb"
     "-nostdlib"
     "-ffreestanding"
     "-fno-builtin"
