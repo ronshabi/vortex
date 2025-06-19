@@ -2,121 +2,123 @@
 
 import os
 import subprocess
-import sys
+import argparse
 
-if len(sys.argv) != 2:
-    print("usage: ./run.py [path to kernel]")
-    exit(1)
+class Qemu:
+    def __init__(self, kernel_path):
+        self.executable = "qemu-system-aarch64"
+        self.machine = "virt"
+        self.cpu = "cortex-a72"
+        self.mem = "128m"
+        self.gic_version = 3
 
-KERNEL = sys.argv[1]
-KERNEL_LOAD_ADDR = 0x40100000
-KERNEL_LOAD_CPU_NUM = 0
+        self.kernel = kernel_path
+        self.kernel_load_address = 0x40100000
+        self.kernel_load_cpu_num = 0
 
-QEMU = "qemu-system-aarch64"
-QEMU_MACHINE = "virt"
-QEMU_GIC_VERSION = 3
-QEMU_CPU = "cortex-a72"
-QEMU_MEMORY = "128m"
+        # https://wiki.debian.org/Arm64Qemu
+        # Debian for Arm64 uses usb-ehci, so we will use it instead of XHCI
 
-QEMU_DEVICES = []
+        self.devices = [
+            f"loader,file={self.kernel},addr={self.kernel_load_address:X},cpu-num={self.kernel_load_cpu_num}",
+            "usb-ehci",
+            "usb-kbd",
+            "virtio-gpu-pci",
+        ]
 
-QEMU_TRACING_OPTS = [
-    "gicv3_*",
-    "virtio_*",
-    "acpi_*",
-    "pci_*",
-    "qemu_vfio*",
-    "vfio_*",
-    "dma_*",
-    "cpu_*",
-    "usb_*",
-    "uefi_*",
-    "arm_*",
-    "clock_*",
-    "system_wakeup_request",
-]
+        self.additional_args = ["-nographic"]
 
-QEMU_DEBUG_MESSAGES = ["int", "cpu_reset", "strace", "unimp", "guest_errors", "strace"]
+        self.tracing_opts = [
+            "gicv3_*",
+            "virtio_*",
+            "acpi_*",
+            "pci_*",
+            "qemu_vfio*",
+            "vfio_*",
+            "dma_*",
+            "cpu_*",
+            "usb_*",
+            "uefi_*",
+            "arm_*",
+            "clock_*",
+            "system_wakeup_request",
+        ]
 
-QEMU_ADDITIONAL_ARGUMENTS = ["-nographic"]
+        self.debug_messages = [
+            "int",
+            "cpu_reset",
+            "strace",
+            "unimp",
+            "guest_errors",
+            "strace",
+        ]
 
-# Add loader
-QEMU_DEVICES.append(
-    f"loader,file={KERNEL},addr={KERNEL_LOAD_ADDR:X},cpu-num={KERNEL_LOAD_CPU_NUM}"
-)
-
-# https://wiki.debian.org/Arm64Qemu
-# Debian for Arm64 uses usb-ehci, so we will use it instead of XHCI
-QEMU_DEVICES.append("usb-ehci")
-QEMU_DEVICES.append("usb-kbd")
-QEMU_DEVICES.append("virtio-gpu-pci")
-
-
-def build_command(dump_dtb_file_name=None):
-    cmd = [QEMU]
-
-    # Add all additional arguments
-    cmd.extend(QEMU_ADDITIONAL_ARGUMENTS)
-
-    # Add machine
-    machine_string = f"{QEMU_MACHINE},gic-version={QEMU_GIC_VERSION}"
-
-    if dump_dtb_file_name:
-        machine_string += f",dumpdtb={dump_dtb_file_name}"
-
-    cmd.extend(["-machine", machine_string])
-
-    # Add CPU
-    cmd.extend(["-cpu", QEMU_CPU])
-
-    # Add memory
-    cmd.extend(["-m", QEMU_MEMORY])
-
-    # Add all devices
-    for device in QEMU_DEVICES:
-        cmd.extend(["-device", device])
-
-    # Add all debug messages
-    cmd.extend(["-d", ",".join(QEMU_DEBUG_MESSAGES)])
-
-    # Add all tracing messages
-    for tracing_opt in QEMU_TRACING_OPTS:
-        cmd.extend(["--trace", tracing_opt])
-
-    return cmd
+        self.debug = False
 
 
-cmd = build_command()
+    def set_kernel(self, path):
+        self.kernel = path
+
+    def get_command(self):
+        cmd = [self.executable]
+
+        # Add all additional arguments
+        cmd.extend(self.additional_args)
+
+        # Add machine
+        machine_string = f"{self.machine},gic-version={self.gic_version}"
+        cmd.extend(["-machine", machine_string])
+
+        # Add CPU
+        cmd.extend(["-cpu", self.cpu])
+
+        # Add memory
+        cmd.extend(["-m", self.mem])
+
+        # Add all devices
+        for device in self.devices:
+            cmd.extend(["-device", device])
+
+        # Add all debug messages
+        cmd.extend(["-d", ",".join(self.debug_messages)])
+
+        # Add all tracing messages
+        for tracing_opt in self.tracing_opts:
+            cmd.extend(["--trace", tracing_opt])
+
+        if self.debug:
+            cmd.extend(["-S", "-s"])
+
+        return cmd
+
+    def set_debugging(self, to):
+        self.debug = to
+
+    def run(self):
+        # Bye python world
+        os.execvp(self.executable, self.get_command())
 
 
-def dump_dtb(dtb_file_name: str):
-    cmd_dumpdtb = build_command(dump_dtb_file_name=dtb_file_name)
-    p = subprocess.run(cmd_dumpdtb)
-    p.check_returncode()
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("kernel", help="Kernel ELF to execute")
+    parser.add_argument(
+        "--debug",
+        "-d",
+        help="Enable GDB through QEMU -S -s",
+        action="store_true",
+        default=False,
+        required=False,
+    )
 
+    args = parser.parse_args()
 
-def dtb_to_dts(dtb_file_name: str):
-    cmd_dtc = [
-        "dtc",
-        "-I",
-        "dtb",
-        "-O",
-        "dts",
-        "-o",
-        dtb_file_name + ".dts",
-        dtb_file_name,
-    ]
+    print("IS DEBUGGING?", args.debug)
 
-    p = subprocess.run(cmd_dtc)
-    p.check_returncode()
-
-
-def run_qemu():
-    # Bye python world
-    os.execvp(QEMU, cmd)
+    qemu = Qemu(args.kernel)
+    qemu.set_debugging(args.debug)
+    qemu.run()
 
 
 if __name__ == "__main__":
-    dump_dtb("qemu.dtb")
-    dtb_to_dts("qemu.dtb")
-    run_qemu()
+    main()
