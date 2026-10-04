@@ -1,6 +1,5 @@
-#include "arch/aarch64/timer.h"
+extern "C" {
 #include <devicetree/devicetree.h>
-#include "drivers/pci.h"
 #include <stdint.h>
 
 #include <drivers/uart.h>
@@ -8,6 +7,8 @@
 #include <printk.h>
 
 #include <arch/aarch64/gicv3.h>
+}
+
 
 struct log_buffer  printk_log_buffer;
 struct log_buffer *printk_log_buffer_ptr;
@@ -17,7 +18,7 @@ struct log_buffer *printk_log_buffer_ptr;
 #define KMEM_BASE 0x40200000
 #define KMEM_SIZE 0x100000      // 1MiB
 
-void kmain(void)
+extern "C" void kmain(void)
 {
     log_buffer_init(&printk_log_buffer);
     printk_log_buffer_ptr = &printk_log_buffer;

@@ -2,7 +2,7 @@
 # Copyright: Ron Shabi <ronsh.net>, 2025
 
 cmake_minimum_required(VERSION 4.0)
-project(Vortex C ASM)
+project(Vortex C CXX ASM)
 
 message(STATUS "Source dir: ${CMAKE_SOURCE_DIR}")
 
@@ -11,6 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}gcc)
+set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}g++)
 set(CMAKE_ASM_COMPILER ${TOOLCHAIN_PREFIX}gcc)
 set(CMAKE_AR_COMPILER ${TOOLCHAIN_PREFIX}ar)
 
@@ -27,7 +28,6 @@ set(cflags_common
     "-Wextra"
     "-Wformat"
     "-Wconversion"
-    "-std=c99"
     "-ggdb"
     "-nostdlib"
     "-ffreestanding"
@@ -74,7 +74,7 @@ set(kernel_sources
 "kernel/klibc/string.h"
 "kernel/logbuffer.c"
 "kernel/logbuffer.h"
-"kernel/main.c"
+"kernel/main.cpp"
 "kernel/memory.c"
 "kernel/memory.h"
 "kernel/printk.c"
@@ -89,12 +89,15 @@ add_executable(
 
 target_compile_options(vortex_nosyms PUBLIC ${cflags_cross})
 target_compile_options(vortex_nosyms PUBLIC ${cflags_common})
+target_compile_options(vortex_nosyms PUBLIC $<$<COMPILE_LANGUAGE:C>:-std=c99>)
+
 set_target_properties(vortex_nosyms PROPERTIES LINK_DEPENDS "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 # set_target_properties(vortex_nosyms PROPERTIES LINKER_TYPE "LLD")
 
 target_include_directories(vortex_nosyms PUBLIC "${CMAKE_SOURCE_DIR}/kernel")
 
 target_link_options(vortex_nosyms PUBLIC ${cflags_cross} ${cflags_common})
+target_link_options(vortex_nosyms PUBLIC $<$<LINK_LANGUAGE:C>:-std=c99>)
 target_link_options(vortex_nosyms PUBLIC "LINKER:-T" "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 
 # Some kernel config
@@ -128,9 +131,11 @@ add_executable(
 
 
 target_compile_options(vortex PUBLIC ${cflags_cross} ${cflags_common})
+target_compile_options(vortex PUBLIC $<$<COMPILE_LANGUAGE:C>:-std=c99>)
 set_target_properties(vortex PROPERTIES LINK_DEPENDS "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 # set_target_properties(vortex PROPERTIES LINKER_TYPE "LLD")
 target_link_options(vortex PUBLIC ${cflags_cross} ${cflags_common})
+target_link_options(vortex PUBLIC $<$<LINK_LANGUAGE:C>:-std=c99>)
 target_link_options(vortex PUBLIC "LINKER:-T" "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 
 # Run from ninja!
