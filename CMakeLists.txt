@@ -6,15 +6,15 @@ project(Vortex C ASM)
 
 message(STATUS "Source dir: ${CMAKE_SOURCE_DIR}")
 
+set(TOOLCHAIN_PREFIX "aarch64-elf-")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 set(CMAKE_COLOR_MAKEFILE ON)
-set(CMAKE_C_COMPILER clang)
-set(CMAKE_ASM_COMPILER clang)
-set(CMAKE_AR_COMPILER clang)
+set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}gcc)
+set(CMAKE_ASM_COMPILER ${TOOLCHAIN_PREFIX}gcc)
+set(CMAKE_AR_COMPILER ${TOOLCHAIN_PREFIX}ar)
 
 set(cflags_cross
-    "--target=aarch64-unknown-elf"
     "-mcpu=cortex-a72"
     "-mgeneral-regs-only"
     "-fno-omit-frame-pointer"
@@ -90,7 +90,7 @@ add_executable(
 target_compile_options(vortex_nosyms PUBLIC ${cflags_cross})
 target_compile_options(vortex_nosyms PUBLIC ${cflags_common})
 set_target_properties(vortex_nosyms PROPERTIES LINK_DEPENDS "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
-set_target_properties(vortex_nosyms PROPERTIES LINKER_TYPE "LLD")
+# set_target_properties(vortex_nosyms PROPERTIES LINKER_TYPE "LLD")
 
 target_include_directories(vortex_nosyms PUBLIC "${CMAKE_SOURCE_DIR}/kernel")
 
@@ -105,7 +105,7 @@ target_compile_definitions(vortex_nosyms PUBLIC "VORTEX_CONF_BASE_ADDRESS=0x4010
 
 add_custom_command(
     OUTPUT "symbols.map"
-    COMMAND llvm-nm -nW "vortex_nosyms" > "symbols.map"
+    COMMAND ${TOOLCHAIN_PREFIX}nm -nW "vortex_nosyms" > "symbols.map"
     COMMENT "Generating kernel symbols.map"
     DEPENDS "vortex_nosyms"
     CODEGEN
@@ -129,7 +129,7 @@ add_executable(
 
 target_compile_options(vortex PUBLIC ${cflags_cross} ${cflags_common})
 set_target_properties(vortex PROPERTIES LINK_DEPENDS "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
-set_target_properties(vortex PROPERTIES LINKER_TYPE "LLD")
+# set_target_properties(vortex PROPERTIES LINKER_TYPE "LLD")
 target_link_options(vortex PUBLIC ${cflags_cross} ${cflags_common})
 target_link_options(vortex PUBLIC "LINKER:-T" "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 

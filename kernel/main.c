@@ -17,11 +17,6 @@ struct log_buffer *printk_log_buffer_ptr;
 #define KMEM_BASE 0x40200000
 #define KMEM_SIZE 0x100000      // 1MiB
 
-void do_exception(void) {
-    void (*p)(void) = (void*)0;
-    p();
-}
-
 void kmain(void)
 {
     log_buffer_init(&printk_log_buffer);
@@ -34,7 +29,7 @@ void kmain(void)
     // devicetree_init(&devicetree, 0x40000000);
     // devicetree_parse(&devicetree);
 
-    do_exception();
+    // do_exception();
 
     // virtual_timer_enable();
 
