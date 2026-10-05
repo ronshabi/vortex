@@ -10,6 +10,13 @@ LABEL_SYMBOL_SECTION_SIZE = f"{LABEL_SYMBOL_SECTION}_size"
 LABEL_SYMBOL_SECTION_STRINGTABLE = "vortex_symbols_stringtbl"
 LABEL_SYMBOL_SECTION_STRINGTABLE_SIZE = f"{LABEL_SYMBOL_SECTION_STRINGTABLE}_size"
 
+class NMParseError(Exception):
+    def __init__(self, line_number, error_message):
+        self.line_number = line_number
+        self.error_message = error_message
+
+        super().__init__(f"nm:{line_number}:{error_message}")
+
 
 def parse_nm_output(filename: str):
     symbols = []
@@ -18,9 +25,12 @@ def parse_nm_output(filename: str):
     with open(filename, "r") as f:
         lines = f.read().splitlines()
 
-        for line in lines:
-            addr, sym_type, func_name = line.split()
-
+        for line_number, line in enumerate(lines):
+            try:
+                addr, sym_type, func_name = line.split()
+            except:
+                raise NMParseError(line_number + 1, f"Could not split '{line}'")
+                
             addr_int = int(addr, 16)
 
             # exclude some symbol types
@@ -100,9 +110,14 @@ def main():
 
     try:
         gen_asm(sys.argv[1])
+    except NMParseError as nmpe:
+        print(nmpe, file=sys.stderr)
+        sys.exit(1)
     except Exception as e:
-        print(f"Error: failed generating symbols for {sys.argv[1]}")
-        print(e)
+        print(f"Error: failed generating symbols for {sys.argv[1]}", file=sys.stderr)
+        print(e, file=sys.stderr)
+        sys.exit(1)
+
 
 
 if __name__ == "__main__":
