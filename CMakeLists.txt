@@ -84,6 +84,7 @@ set(kernel_sources
 "kernel/printk.c"
 "kernel/printk.h"
 "kernel/types.h"
+"kernel/vtx/Array.hpp"
 )
 
 # Get crtbegin and crtend.

@@ -9,6 +9,8 @@ extern "C" {
 #include <arch/aarch64/gicv3.h>
 }
 
+#include "vtx/Array.hpp"
+
 
 struct log_buffer  printk_log_buffer;
 struct log_buffer *printk_log_buffer_ptr;
@@ -26,6 +28,17 @@ extern "C" void kmain(void)
     uart_init();
 
     printk("-*- Vortex -*-\n");
+
+    vtx::Array<int, 4> testArray{};
+
+    for (size_t i = 0; i < testArray.Length(); i++) {
+        testArray[i] = static_cast<int>(2 * i);
+    }
+
+    for (size_t i = 0; i < testArray.Length(); i++) {
+        printk("Array @ %zu => %d\n", i, testArray[i]);
+    }
+
 
     // devicetree_init(&devicetree, 0x40000000);
     // devicetree_parse(&devicetree);
