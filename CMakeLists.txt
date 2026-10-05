@@ -35,7 +35,7 @@ set(cflags_common
     "-fno-lto"
     "-O0"
     $<$<COMPILE_LANGUAGE:C>:-std=c99>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=c++26 -fno-exceptions -fno-rtti -fno-reflection -Wno-class-conversion -Wextra-semi>
+    $<$<COMPILE_LANGUAGE:CXX>:-std=c++26 -fno-exceptions -fno-rtti -fno-reflection -Wno-class-conversion -Wextra-semi >
 )
 
 
