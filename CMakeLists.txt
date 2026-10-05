@@ -108,7 +108,7 @@ target_compile_definitions(vortex_nosyms PUBLIC "VORTEX_CONF_BASE_ADDRESS=0x4010
 
 add_custom_command(
     OUTPUT "symbols.map"
-    COMMAND ${TOOLCHAIN_PREFIX}nm -nW "vortex_nosyms" > "symbols.map"
+    COMMAND ${TOOLCHAIN_PREFIX}nm -nC "vortex_nosyms" > "symbols.map"
     COMMENT "Generating kernel symbols.map"
     DEPENDS "vortex_nosyms"
     CODEGEN

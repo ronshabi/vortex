@@ -27,7 +27,8 @@ def parse_nm_output(filename: str):
 
         for line_number, line in enumerate(lines):
             try:
-                addr, sym_type, func_name = line.split()
+                addr, sym_type, *rest = line.split()
+                func_name = ' '.join(rest)
             except:
                 raise NMParseError(line_number + 1, f"Could not split '{line}'")
                 
