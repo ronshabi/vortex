@@ -33,7 +33,11 @@ set(cflags_common
     "-ffreestanding"
     "-fno-builtin"
     "-fno-lto"
+    "-O0"
+    $<$<COMPILE_LANGUAGE:C>:-std=c99>
+    $<$<COMPILE_LANGUAGE:CXX>:-std=c++26 -fno-exceptions -fno-rtti -fno-reflection -Wno-class-conversion -Wextra-semi>
 )
+
 
 set(kernel_sources
 "kernel/arch/aarch64/aarch64.h"
@@ -89,7 +93,6 @@ add_executable(
 
 target_compile_options(vortex_nosyms PUBLIC ${cflags_cross})
 target_compile_options(vortex_nosyms PUBLIC ${cflags_common})
-target_compile_options(vortex_nosyms PUBLIC $<$<COMPILE_LANGUAGE:C>:-std=c99>)
 
 set_target_properties(vortex_nosyms PROPERTIES LINK_DEPENDS "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 # set_target_properties(vortex_nosyms PROPERTIES LINKER_TYPE "LLD")
@@ -97,7 +100,6 @@ set_target_properties(vortex_nosyms PROPERTIES LINK_DEPENDS "${CMAKE_SOURCE_DIR}
 target_include_directories(vortex_nosyms PUBLIC "${CMAKE_SOURCE_DIR}/kernel")
 
 target_link_options(vortex_nosyms PUBLIC ${cflags_cross} ${cflags_common})
-target_link_options(vortex_nosyms PUBLIC $<$<LINK_LANGUAGE:C>:-std=c99>)
 target_link_options(vortex_nosyms PUBLIC "LINKER:-T" "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 
 # Some kernel config
@@ -131,11 +133,9 @@ add_executable(
 
 
 target_compile_options(vortex PUBLIC ${cflags_cross} ${cflags_common})
-target_compile_options(vortex PUBLIC $<$<COMPILE_LANGUAGE:C>:-std=c99>)
 set_target_properties(vortex PROPERTIES LINK_DEPENDS "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 # set_target_properties(vortex PROPERTIES LINKER_TYPE "LLD")
 target_link_options(vortex PUBLIC ${cflags_cross} ${cflags_common})
-target_link_options(vortex PUBLIC $<$<LINK_LANGUAGE:C>:-std=c99>)
 target_link_options(vortex PUBLIC "LINKER:-T" "${CMAKE_SOURCE_DIR}/kernel/linker.ld")
 
 # Run from ninja!
