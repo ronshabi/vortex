@@ -35,7 +35,14 @@ set(cflags_common
     "-fno-lto"
     "-O0"
     $<$<COMPILE_LANGUAGE:C>:-std=c99>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=c++26 -fno-exceptions -fno-rtti -fno-reflection -Wno-class-conversion -Wextra-semi >
+    $<$<COMPILE_LANGUAGE:CXX>:-std=c++26 
+                              -fno-exceptions
+                              -fno-rtti
+                              -fno-reflection
+                              -fno-threadsafe-statics
+                              -fno-asynchronous-unwind-tables
+                              -Wno-class-conversion
+                              -Wextra-semi >
 )
 
 
@@ -79,6 +86,7 @@ set(kernel_sources
 "kernel/logbuffer.c"
 "kernel/logbuffer.h"
 "kernel/main.cpp"
+"kernel/runtime.cpp"
 "kernel/memory.c"
 "kernel/memory.h"
 "kernel/printk.c"
@@ -86,24 +94,6 @@ set(kernel_sources
 "kernel/types.h"
 "kernel/vtx/Array.hpp"
 )
-
-# Get crtbegin and crtend.
-# We should use the C++ versions since final linkage happens with C++ objects
-
-execute_process(COMMAND ${TOOLCHAIN_PREFIX}g++ ${cflags_cross} ${cflags_common} --print-file-name=crtbegin.o
-                OUTPUT_VARIABLE VORTEX_CRT_BEGIN_PATH
-                OUTPUT_STRIP_TRAILING_WHITESPACE
-                COMMAND_ERROR_IS_FATAL ANY
-                )
-
-execute_process(COMMAND ${TOOLCHAIN_PREFIX}g++ ${cflags_cross} ${cflags_common} --print-file-name=crtend.o
-                OUTPUT_VARIABLE VORTEX_CRT_END_PATH
-                OUTPUT_STRIP_TRAILING_WHITESPACE
-                COMMAND_ERROR_IS_FATAL ANY
-                )
-
-message(STATUS "CRTBEGIN : (${VORTEX_CRT_BEGIN_PATH})")
-message(STATUS "CRTEND   : (${VORTEX_CRT_END_PATH})")
 
 add_executable(
     vortex_nosyms

@@ -20,6 +20,9 @@ struct log_buffer *printk_log_buffer_ptr;
 #define KMEM_BASE 0x40200000
 #define KMEM_SIZE 0x100000      // 1MiB
 
+// global ctor lol
+vtx::Array<int, 67> g_arr{67};
+
 extern "C" void kmain(void)
 {
     log_buffer_init(&printk_log_buffer);
