@@ -15,8 +15,10 @@ SECTIONS {
     }
 
     .bss : {
+        . = ALIGN(8);
         __bss_start = .;
         *(.bss .bss.* COMMON)
+        . = ALIGN(8);
         __bss_end = .;
     }
 
