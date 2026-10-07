@@ -3,19 +3,21 @@ SECTIONS {
     . = 0x40100000;
 
     .text : {
-        *(.text)
+        *(.text .text.*)
     }
 
     .rodata : {
-        *(.rodata)
+        *(.rodata .rodata.*)
     }
 
     .data : {
-        *(.data)
+        *(.data .data.*)
     }
 
     .bss : {
-        *(.bss COMMON)
+        __bss_start = .;
+        *(.bss .bss.* COMMON)
+        __bss_end = .;
     }
 
     . = ALIGN(8);
